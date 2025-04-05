@@ -1,6 +1,5 @@
 package com.devone.navcalc;
 
-import com.devone.navcalc.ExplorationPlanner;
 import java.io.FileInputStream;
 import java.util.List;
 import java.util.Properties;
@@ -31,7 +30,10 @@ public class Main {
                     10 // max paths to draw
             );
 
-            HtmlPlotGenerator.generateExplorationPlot(safe, unsafe, reachable, validPaths,
+            List<NavigablePoint> selectedPath = BotRouteSelector.choosePath(validPaths);
+
+            HtmlPlotGenerator.generateExplorationPlot(
+                    safe, unsafe, reachable, validPaths, selectedPath,
                     GeoDataLoader.botPosition, "nav_report.html");
 
             System.out.println("Saved visualization to nav_report.html");
