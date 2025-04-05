@@ -1,0 +1,41 @@
+package com.devone.navcalc;
+
+import java.util.*;
+
+public class ExplorationPlanner {
+
+    public static List<List<NavigablePoint>> findPathsToDistantTargets(
+            NavigablePoint current,
+            List<NavigablePoint> reachable,
+            int maxPaths) {
+
+        List<List<NavigablePoint>> result = new ArrayList<>();
+        Set<String> reachableSet = new HashSet<>();
+        for (NavigablePoint p : reachable) {
+            reachableSet.add(p.x + "," + p.y + "," + p.z);
+        }
+
+        // Отсортируем reachable точки по расстоянию (самые дальние — в начале)
+        reachable.sort(Comparator.comparingInt(p -> -manhattanDistance(current, p)));
+
+        Set<String> visitedTargets = new HashSet<>();
+
+        for (NavigablePoint target : reachable) {
+            if (target.equals(current)) continue;
+            if (visitedTargets.contains(target.x + "," + target.y + "," + target.z)) continue;
+
+            List<NavigablePoint> path = Pathfinder.findPath(current, target, reachableSet);
+            if (path != null && !path.isEmpty()) {
+                result.add(path);
+                visitedTargets.add(target.x + "," + target.y + "," + target.z);
+                if (result.size() >= maxPaths) break;
+            }
+        }
+
+        return result;
+    }
+
+    private static int manhattanDistance(NavigablePoint a, NavigablePoint b) {
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z);
+    }
+}
