@@ -17,8 +17,9 @@ public class Main {
             System.out.println("Loaded blocks: " + GeoDataLoader.blocks.size());
             System.out.println("Bot position: " + GeoDataLoader.botPosition);
 
-            List<NavigablePoint> safe = SafeBlockFilter.extractSafeBlocks(GeoDataLoader.blocks);
-            List<NavigablePoint> unsafe = SafeBlockFilter.extractUnsafeBlocks(GeoDataLoader.blocks);
+            List<BlockData> trimmedBlocks = VerticalRangeFilter.trimByYRange(GeoDataLoader.blocks, GeoDataLoader.botPosition.y, 2);
+            List<NavigablePoint> safe = SafeBlockFilter.extractSafeBlocks(trimmedBlocks);
+            List<NavigablePoint> unsafe = SafeBlockFilter.extractUnsafeBlocks(trimmedBlocks);
             List<NavigablePoint> reachable = SafeBlockFilter.extractReachableBlocksFromBot(
                     GeoDataLoader.blocks, GeoDataLoader.botPosition);
 
@@ -27,7 +28,7 @@ public class Main {
                                        GeoDataLoader.botPosition.y,
                                        GeoDataLoader.botPosition.z),
                     reachable,
-                    10 // max paths to draw
+                    100 // max paths to draw
             );
 
             List<NavigablePoint> selectedPath = BotRouteSelector.choosePath(validPaths);
