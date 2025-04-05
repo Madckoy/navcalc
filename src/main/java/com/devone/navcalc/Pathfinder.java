@@ -53,7 +53,6 @@ public class Pathfinder {
 
     private static List<NavigablePoint> reconstructPath(NavigablePoint end, Map<String, NavigablePoint> parentMap) {
         List<NavigablePoint> path = new LinkedList<>();
-        String currentKey = key(end);
         NavigablePoint current = end;
 
         while (current != null) {
