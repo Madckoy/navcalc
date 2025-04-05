@@ -27,9 +27,7 @@ public class Main {
                     new NavigablePoint(GeoDataLoader.botPosition.x,
                                        GeoDataLoader.botPosition.y,
                                        GeoDataLoader.botPosition.z),
-                    reachable,
-                    20 // max paths to draw
-            );
+                    reachable);
 
             List<NavigablePoint> selectedPath = BotRouteSelector.choosePath(validPaths);
 

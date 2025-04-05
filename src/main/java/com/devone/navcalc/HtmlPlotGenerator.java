@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class HtmlPlotGenerator {
 
-
     public static void generateExplorationPlot(List<NavigablePoint> safeBlocks,
                                                List<NavigablePoint> unsafeBlocks,
                                                List<NavigablePoint> reachableBlocks,
@@ -71,6 +70,13 @@ public class HtmlPlotGenerator {
                 html.append("selected.y.push(").append(p.y).append(");");
                 html.append("selected.z.push(").append(p.z).append(");");
             }
+
+            // Final goal point as a star
+            NavigablePoint goal = selectedPath.get(selectedPath.size() - 1);
+            html.append("var goalPoint = { x:[").append(goal.x)
+                .append("], y:[").append(goal.y)
+                .append("], z:[").append(goal.z)
+                .append("], mode:'markers', marker:{size:10, color:'gold', symbol:'star'}, type:'scatter3d', name:'Goal'};");
         }
 
         // Bot
@@ -84,7 +90,7 @@ public class HtmlPlotGenerator {
         }
         html.append(", bot");
         if (selectedPath != null && !selectedPath.isEmpty()) {
-            html.append(", selected");
+            html.append(", selected, goalPoint");
         }
         html.append("], {");
         html.append("margin:{l:0,r:0,b:0,t:30},");

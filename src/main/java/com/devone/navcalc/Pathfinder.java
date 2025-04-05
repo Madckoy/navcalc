@@ -24,9 +24,12 @@ public class Pathfinder {
 
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
-                    if (dx == 0 && dz == 0) continue;
-
+                    // запретить одновременное смещение по x и z (горизонтальная диагональ)
+                    if (dx != 0 && dz != 0) continue;
                     for (int dy = -1; dy <= 1; dy++) {
+                        // разрешаем смещения по одной оси за раз
+                        if (dx == 0 && dy == 0 && dz == 0) continue;
+
                         int nx = current.x + dx;
                         int ny = current.y + dy;
                         int nz = current.z + dz;
