@@ -1,5 +1,7 @@
+
 package com.devone.navcalc;
 
+import com.devone.navcalc.GeoUtils;
 import java.util.*;
 
 public class ExplorationPlanner {
@@ -9,18 +11,25 @@ public class ExplorationPlanner {
             List<NavigablePoint> reachable,
             int maxPaths) {
 
+        int scanRadius = GeoUtils.estimateHorizontalRadius(GeoDataLoader.blocks);
+
+        List<NavigablePoint> targets = EvenlyDistributedTargetSelector.findEvenlyDistributedTargets(
+            reachable,
+            new BotPosition(current.x, current.y, current.z),
+            16, maxPaths,
+            false, // prefer nearer spread
+            scanRadius
+        );
+
         List<List<NavigablePoint>> result = new ArrayList<>();
         Set<String> reachableSet = new HashSet<>();
         for (NavigablePoint p : reachable) {
             reachableSet.add(p.x + "," + p.y + "," + p.z);
         }
 
-        // Отсортируем reachable точки по расстоянию (самые дальние — в начале)
-        reachable.sort(Comparator.comparingInt(p -> -manhattanDistance(current, p)));
-
         Set<String> visitedTargets = new HashSet<>();
 
-        for (NavigablePoint target : reachable) {
+        for (NavigablePoint target : targets) {
             if (target.equals(current)) continue;
             if (visitedTargets.contains(target.x + "," + target.y + "," + target.z)) continue;
 
