@@ -17,12 +17,26 @@ public class BotBlockData extends BotCoordinate3D {
     
     public boolean isSolid() {
         // сюда можно добавлять исключения по мере надобности
+        if (type == null) return false;
         String t = type.toUpperCase();
-        return !(t.contains("AIR") || t.contains("WATER") || t.contains("LAVA"));
+        return !(
+            t.contains("AIR") ||
+            t.contains("WATER") ||
+            t.contains("LAVA") ||
+
+            t.equals("FIRE") ||
+            t.equals("CACTUS")
+        );
     }
 
     public boolean isBot() {
         return bot;
+    }
+
+    public boolean isPassableAndSafe() {
+        if (type == null) return false;
+        String t = type.toUpperCase();
+        return AIR_TYPES.contains(t) || t.equals("TALL_GRASS") || t.equals("SNOW") || t.equals("FLOWER");
     }
 
     @Override
