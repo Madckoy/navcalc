@@ -1,14 +1,16 @@
-package com.devone.navcalc;
+package com.devone.bot.core.navigation;
 
 import java.util.*;
 
-public class AdaptiveTargetSelector {
+import com.devone.bot.util.BotCoordinate3D;
 
-    public static List<NavigablePoint> selectAdaptiveSectorTargets(List<NavigablePoint> reachable, BotPosition bot) {
-        Map<Integer, NavigablePoint> bestInSector = new HashMap<>();
+public class BotAdaptiveTargetSelector {
+
+    public static List<BotCoordinate3D> selectAdaptiveSectorTargets(List<BotCoordinate3D> reachable, BotCoordinate3D bot) {
+        Map<Integer, BotCoordinate3D> bestInSector = new HashMap<>();
         Map<Integer, Double> maxDistances = new HashMap<>();
 
-        for (NavigablePoint point : reachable) {
+        for (BotCoordinate3D point : reachable) {
             int dx = point.x - bot.x;
             int dz = point.z - bot.z;
 

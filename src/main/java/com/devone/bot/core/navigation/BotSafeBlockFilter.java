@@ -1,34 +1,37 @@
-package com.devone.navcalc;
+package com.devone.bot.core.navigation;
 
 import java.util.*;
 
-public class SafeBlockFilter {
+import com.devone.bot.util.BotBlockData;
+import com.devone.bot.util.BotCoordinate3D;
+
+public class BotSafeBlockFilter {
 
     public static final Set<String> UNSAFE_TYPES = Set.of(
         "AIR", "CAVE_AIR", "VOID_AIR", "WATER", "LAVA", "CACTUS", "FIRE", "MAGMA_BLOCK"
     );
 
-    public static List<NavigablePoint> extractSafeBlocks(List<BlockData> blocks) {
+    public static List<BotCoordinate3D> extractSafeBlocks(List<BotBlockData> blocks) {
         return blocks.stream()
                 .filter(b -> !UNSAFE_TYPES.contains(b.type.toUpperCase()))
-                .map(b -> new NavigablePoint(b.x, b.y, b.z))
+                .map(b -> new BotCoordinate3D(b.x, b.y, b.z))
                 .toList();
     }
 
-    public static List<NavigablePoint> extractUnsafeBlocks(List<BlockData> blocks) {
+    public static List<BotCoordinate3D> extractUnsafeBlocks(List<BotBlockData> blocks) {
         return blocks.stream()
                 .filter(b -> UNSAFE_TYPES.contains(b.type.toUpperCase()))
-                .map(b -> new NavigablePoint(b.x, b.y, b.z))
+                .map(b -> new BotCoordinate3D(b.x, b.y, b.z))
                 .toList();
     }
 
-    public static List<NavigablePoint> extractReachableBlocksFromBot(List<BlockData> blocks, BotPosition bot) {
-        Map<String, BlockData> blockMap = new HashMap<>();
+    public static List<BotCoordinate3D> extractReachableBlocksFromBot(List<BotBlockData> blocks, BotCoordinate3D bot) {
+        Map<String, BotBlockData> blockMap = new HashMap<>();
         Set<String> unsafeSet = new HashSet<>();
         Set<String> visited = new HashSet<>();
-        List<NavigablePoint> reachable = new ArrayList<>();
+        List<BotCoordinate3D> reachable = new ArrayList<>();
 
-        for (BlockData b : blocks) {
+        for (BotBlockData b : blocks) {
             String key = b.x + "," + b.y + "," + b.z;
             blockMap.put(key, b);
             if (UNSAFE_TYPES.contains(b.type.toUpperCase())) {
@@ -36,13 +39,13 @@ public class SafeBlockFilter {
             }
         }
 
-        Queue<NavigablePoint> queue = new LinkedList<>();
-        NavigablePoint start = new NavigablePoint(bot.x, bot.y, bot.z);
+        Queue<BotCoordinate3D> queue = new LinkedList<>();
+        BotCoordinate3D start = new BotCoordinate3D(bot.x, bot.y, bot.z);
         queue.add(start);
         visited.add(bot.x + "," + bot.y + "," + bot.z);
 
         while (!queue.isEmpty()) {
-            NavigablePoint current = queue.poll();
+            BotCoordinate3D current = queue.poll();
             reachable.add(current);
 
             for (int dx = -1; dx <= 1; dx++) {
@@ -70,7 +73,7 @@ public class SafeBlockFilter {
                         if (Math.abs(ny - current.y) > 1) continue;
 
                         visited.add(key);
-                        queue.add(new NavigablePoint(nx, ny, nz));
+                        queue.add(new BotCoordinate3D(nx, ny, nz));
                     }
                 }
             }

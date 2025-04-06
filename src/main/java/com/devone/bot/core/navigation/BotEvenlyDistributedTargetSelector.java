@@ -1,14 +1,17 @@
 
-package com.devone.navcalc;
+package com.devone.bot.core.navigation;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EvenlyDistributedTargetSelector {
+import com.devone.bot.util.BotCoordinate3D;
 
-    public static List<NavigablePoint> findEvenlyDistributedTargets(
-            List<NavigablePoint> reachable,
-            BotPosition bot,
+
+public class BotEvenlyDistributedTargetSelector {
+
+    public static List<BotCoordinate3D> findEvenlyDistributedTargets(
+            List<BotCoordinate3D> reachable,
+            BotCoordinate3D bot,
             int sectors,
             int maxTargets,
             boolean preferDistant,
@@ -16,9 +19,9 @@ public class EvenlyDistributedTargetSelector {
 
         double minRadius = Math.max(2.0, scanRadius * 1); // <-- привязка к радиусу
 
-        Map<Integer, NavigablePoint> sectorMap = new HashMap<>();
+        Map<Integer, BotCoordinate3D> sectorMap = new HashMap<>();
 
-        for (NavigablePoint point : reachable) {
+        for (BotCoordinate3D point : reachable) {
             if (point.x == bot.x && point.z == bot.z) continue;
 
             double dx = point.x - bot.x;
@@ -31,7 +34,7 @@ public class EvenlyDistributedTargetSelector {
             double angle = Math.atan2(dz, dx);
             int sector = (int) ((angle + Math.PI) / (2 * Math.PI) * sectors) % sectors;
 
-            NavigablePoint current = sectorMap.get(sector);
+            BotCoordinate3D current = sectorMap.get(sector);
 
             if (current == null ||
                 (preferDistant && distSq > squaredDistance(current, bot)) ||
@@ -46,7 +49,7 @@ public class EvenlyDistributedTargetSelector {
                 .collect(Collectors.toList());
     }
 
-    private static double squaredDistance(NavigablePoint point, BotPosition bot) {
+    private static double squaredDistance(BotCoordinate3D point, BotCoordinate3D bot) {
         return Math.pow(point.x - bot.x, 2) + Math.pow(point.y - bot.y, 2) + Math.pow(point.z - bot.z, 2);
     }
 }

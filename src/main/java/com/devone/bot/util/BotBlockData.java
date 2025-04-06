@@ -1,12 +1,9 @@
-package com.devone.navcalc;
+package com.devone.bot.util;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-
-public class BlockData {
+public class BotBlockData extends BotCoordinate3D {
 
     private static final Set<String> AIR_TYPES = Set.of("AIR", "CAVE_AIR", "VOID_AIR");
 

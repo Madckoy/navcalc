@@ -1,9 +1,11 @@
-package com.devone.navcalc;
+package com.devone.bot.core.navigation;
 
 import java.util.List;
 import java.util.Random;
 
-public class BotRouteSelector {
+import com.devone.bot.util.BotCoordinate3D;
+
+public class BotBotRouteSelector {
 
     private static final Random RANDOM = new Random();
 
@@ -11,7 +13,7 @@ public class BotRouteSelector {
      * Выбирает один маршрут для бота из списка валидных маршрутов.
      * На текущем этапе — случайным образом.
      */
-    public static List<NavigablePoint> choosePath(List<List<NavigablePoint>> validPaths) {
+    public static List<BotCoordinate3D> choosePath(List<List<BotCoordinate3D>> validPaths) {
         if (validPaths == null || validPaths.isEmpty()) {
             return null;
         }

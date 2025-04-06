@@ -1,12 +1,14 @@
-package com.devone.navcalc;
+package com.devone.bot.core.navigation;
 
 import java.util.*;
 
-public class Pathfinder {
+import com.devone.bot.util.BotCoordinate3D;
 
-    public static List<NavigablePoint> findPath(NavigablePoint start, NavigablePoint goal, Set<String> reachableSet) {
-        Map<String, NavigablePoint> parentMap = new HashMap<>();
-        Queue<NavigablePoint> queue = new LinkedList<>();
+public class BotPathfinder {
+
+    public static List<BotCoordinate3D> findPath(BotCoordinate3D start, BotCoordinate3D goal, Set<String> reachableSet) {
+        Map<String, BotCoordinate3D> parentMap = new HashMap<>();
+        Queue<BotCoordinate3D> queue = new LinkedList<>();
         Set<String> visited = new HashSet<>();
 
         String startKey = key(start);
@@ -16,7 +18,7 @@ public class Pathfinder {
         visited.add(startKey);
 
         while (!queue.isEmpty()) {
-            NavigablePoint current = queue.poll();
+            BotCoordinate3D current = queue.poll();
 
             if (key(current).equals(goalKey)) {
                 return reconstructPath(current, parentMap);
@@ -39,7 +41,7 @@ public class Pathfinder {
                         if (visited.contains(neighborKey)) continue;
                         if (!reachableSet.contains(neighborKey)) continue;
 
-                        NavigablePoint neighbor = new NavigablePoint(nx, ny, nz);
+                        BotCoordinate3D neighbor = new BotCoordinate3D(nx, ny, nz);
                         queue.add(neighbor);
                         visited.add(neighborKey);
                         parentMap.put(neighborKey, current);
@@ -51,9 +53,9 @@ public class Pathfinder {
         return Collections.emptyList(); // путь не найден
     }
 
-    private static List<NavigablePoint> reconstructPath(NavigablePoint end, Map<String, NavigablePoint> parentMap) {
-        List<NavigablePoint> path = new LinkedList<>();
-        NavigablePoint current = end;
+    private static List<BotCoordinate3D> reconstructPath(BotCoordinate3D end, Map<String, BotCoordinate3D> parentMap) {
+        List<BotCoordinate3D> path = new LinkedList<>();
+        BotCoordinate3D current = end;
 
         while (current != null) {
             path.add(0, current);
@@ -63,7 +65,7 @@ public class Pathfinder {
         return path;
     }
 
-    private static String key(NavigablePoint p) {
+    private static String key(BotCoordinate3D p) {
         return p.x + "," + p.y + "," + p.z;
     }
 }

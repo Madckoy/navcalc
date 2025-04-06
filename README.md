@@ -26,5 +26,5 @@ java -jar target/navcalc-jar-with-dependencies.jar
 
 ## 📦 Структура
 
-- `src/main/java/com/devone/navcalc/` — основной код
+- `src/main/java/com/devone/bot/` — основной код
 - `target/nav_report.html` — HTML с визуализацией (создаётся при запуске)

@@ -27,7 +27,7 @@
                     <finalName>navcalc</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>com.devone.navcalc.Main</mainClass>
+                            <mainClass>com.devone.bot.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
