@@ -1,4 +1,4 @@
-package com.devone.bot.util;
+package com.devone.bot.utils;
 
 import java.util.Set;
 
@@ -13,6 +13,12 @@ public class BotBlockData extends BotCoordinate3D {
 
     public boolean isAir() {
         return type != null && AIR_TYPES.contains(type.toUpperCase());
+    } 
+    
+    public boolean isSolid() {
+        // сюда можно добавлять исключения по мере надобности
+        String t = type.toUpperCase();
+        return !(t.contains("AIR") || t.contains("WATER") || t.contains("LAVA"));
     }
 
     public boolean isBot() {

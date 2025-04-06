@@ -1,5 +1,5 @@
 
-package com.devone.bot.util;
+package com.devone.bot.utils;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.devone.bot.util.BotCoordinate3D;
+import com.devone.bot.utils.BotCoordinate3D;
 
 public class HtmlPlotGenerator {
 

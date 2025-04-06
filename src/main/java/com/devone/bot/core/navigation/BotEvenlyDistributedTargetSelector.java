@@ -4,7 +4,7 @@ package com.devone.bot.core.navigation;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.devone.bot.util.BotCoordinate3D;
+import com.devone.bot.utils.BotCoordinate3D;
 
 
 public class BotEvenlyDistributedTargetSelector {
