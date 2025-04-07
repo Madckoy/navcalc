@@ -46,10 +46,7 @@ public class Main {
                                                                                             true, // предпочитать дальние
                                                                                             10    // минимальная дистанция (по scanRadius)
                                                                                         );
-
-                
             
-            //electNavigationTargets(BotGeoDataLoader.botPosition, reachable, 1.0, SelectionStrategy.RANDOM_FARTHEST);
 
             HtmlPlotGenerator.generateExplorationPlot(allBlocks, safe, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
 

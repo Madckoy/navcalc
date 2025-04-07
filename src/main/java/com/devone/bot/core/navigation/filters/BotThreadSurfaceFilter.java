@@ -12,7 +12,6 @@
  * @since 2025-04-07
  */
 
-
  package com.devone.bot.core.navigation.filters;
 
  import com.devone.bot.utils.BlockMaterialUtils;
