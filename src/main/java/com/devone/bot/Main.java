@@ -1,22 +1,21 @@
 package com.devone.bot;
 
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
 
-import com.devone.bot.core.navigation.BotBotRouteSelector;
-import com.devone.bot.core.navigation.BotExplorationPlanner;
-import com.devone.bot.core.navigation.BotGeoDataLoader;
-import com.devone.bot.core.navigation.BotNavigablePointFilter;
-import com.devone.bot.core.navigation.BotReachabilityResolver;
-import com.devone.bot.core.navigation.BotSafeBlockFilter;
-import com.devone.bot.core.navigation.ThreadSurfaceFilter;
+import java.util.Properties;
+
+import com.devone.bot.core.navigation.filters.BotVerticalRangeFilter;
+import com.devone.bot.core.navigation.BotExplorationTargetPlanner;
+import com.devone.bot.core.navigation.filters.BotNavigablePointFilter;
+import com.devone.bot.core.navigation.filters.BotSafeBlockFilter;
+import com.devone.bot.core.navigation.filters.BotThreadSurfaceFilter;
+import com.devone.bot.core.navigation.resolvers.BotReachabilityResolver;
+import com.devone.bot.core.navigation.selectors.BotNavigationTargetSelector;
+import com.devone.bot.core.navigation.selectors.BotNavigationTargetSelector.SelectionStrategy;
 import com.devone.bot.utils.BotBlockData;
-import com.devone.bot.core.navigation.BotBotVerticalRangeFilter;;
+import com.devone.bot.utils.BotCoordinate3D;
+import com.devone.bot.utils.BotGeoDataLoader;;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,13 +32,26 @@ public class Main {
             System.out.println("Bot position: " + BotGeoDataLoader.botPosition);
 
             List<BotBlockData> allBlocks = BotGeoDataLoader.blocks;
-            List<BotBlockData> trimmedBlocks = BotBotVerticalRangeFilter.trimByYRange(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
+            List<BotBlockData> trimmedBlocks = BotVerticalRangeFilter.trimByYRange(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
             List<BotBlockData> safe = BotSafeBlockFilter.extractSafeBlocks(trimmedBlocks);
-            List<BotBlockData> walkable = ThreadSurfaceFilter.filterWalkableSurfaceBlocks(safe);
+            List<BotBlockData> walkable = BotThreadSurfaceFilter.filterWalkableSurfaceBlocks(safe);
             List<BotBlockData> navigable = BotNavigablePointFilter.filterNavigablePoints(walkable);
             List<BotBlockData> reachable = BotReachabilityResolver.findReachablePoints(BotGeoDataLoader.botPosition, navigable);
 
-            HtmlPlotGenerator.generateExplorationPlot(allBlocks, safe, walkable, navigable, reachable, BotGeoDataLoader.botPosition, "nav_report.html");
+            List<BotBlockData> navTargets = BotExplorationTargetPlanner.selectTargets(BotGeoDataLoader.botPosition,
+                                                                                            reachable,
+                                                                                            BotExplorationTargetPlanner.Strategy.EVEN_DISTRIBUTED,
+                                                                                            24,   // секторное деление
+                                                                                            8,    // максимум целей
+                                                                                            true, // предпочитать дальние
+                                                                                            10    // минимальная дистанция (по scanRadius)
+                                                                                        );
+
+                
+            
+            //electNavigationTargets(BotGeoDataLoader.botPosition, reachable, 1.0, SelectionStrategy.RANDOM_FARTHEST);
+
+            HtmlPlotGenerator.generateExplorationPlot(allBlocks, safe, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
 
             System.out.println("Saved visualization to nav_report.html");
 

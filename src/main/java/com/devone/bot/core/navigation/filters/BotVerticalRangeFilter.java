@@ -1,4 +1,4 @@
-package com.devone.bot.core.navigation;
+package com.devone.bot.core.navigation.filters;
 
 
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.devone.bot.utils.BotBlockData;
 
-public class BotBotVerticalRangeFilter {
+public class BotVerticalRangeFilter {
     public static List<BotBlockData> trimByYRange(List<BotBlockData> blocks, int botY, int range) {
         return blocks.stream()
             .filter(block -> Math.abs(block.y - botY) <= range)

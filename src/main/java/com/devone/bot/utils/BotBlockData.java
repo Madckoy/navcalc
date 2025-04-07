@@ -1,11 +1,8 @@
 package com.devone.bot.utils;
 
-import java.util.Set;
-
-
 public class BotBlockData extends BotCoordinate3D {
 
-    public int x, y, z;
+
     public String type;
     public boolean bot;  // из JSON
 

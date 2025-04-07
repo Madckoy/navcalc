@@ -1,7 +1,5 @@
-package com.devone.bot.core.navigation;
+package com.devone.bot.utils;
 
-import com.devone.bot.utils.BotBlockData;
-import com.devone.bot.utils.BotCoordinate3D;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

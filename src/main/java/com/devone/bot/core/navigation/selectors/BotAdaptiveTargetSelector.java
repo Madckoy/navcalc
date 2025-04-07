@@ -1,4 +1,4 @@
-package com.devone.bot.core.navigation;
+package com.devone.bot.core.navigation.selectors;
 
 import java.util.*;
 
