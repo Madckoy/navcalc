@@ -1,5 +1,5 @@
 
-package com.devone.bot.core.navigation.selectors;
+package com.devone.bot.core.navigation.old;
 
 import java.util.*;
 import java.util.stream.Collectors;

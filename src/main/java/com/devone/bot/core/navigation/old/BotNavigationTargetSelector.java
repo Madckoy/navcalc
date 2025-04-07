@@ -1,5 +1,5 @@
 
-package com.devone.bot.core.navigation.selectors;
+package com.devone.bot.core.navigation.old;
 
 import com.devone.bot.utils.BotBlockData;
 import com.devone.bot.utils.BotCoordinate3D;

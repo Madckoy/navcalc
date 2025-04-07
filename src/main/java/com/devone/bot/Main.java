@@ -7,14 +7,12 @@ import java.util.Properties;
 
 import com.devone.bot.core.navigation.filters.BotVerticalRangeFilter;
 import com.devone.bot.core.navigation.BotExplorationTargetPlanner;
+import com.devone.bot.core.navigation.BotNavigationPlannerWrapper;
 import com.devone.bot.core.navigation.filters.BotNavigablePointFilter;
 import com.devone.bot.core.navigation.filters.BotSafeBlockFilter;
 import com.devone.bot.core.navigation.filters.BotThreadSurfaceFilter;
 import com.devone.bot.core.navigation.resolvers.BotReachabilityResolver;
-import com.devone.bot.core.navigation.selectors.BotNavigationTargetSelector;
-import com.devone.bot.core.navigation.selectors.BotNavigationTargetSelector.SelectionStrategy;
 import com.devone.bot.utils.BotBlockData;
-import com.devone.bot.utils.BotCoordinate3D;
 import com.devone.bot.utils.BotGeoDataLoader;;
 
 public class Main {
@@ -38,7 +36,7 @@ public class Main {
             List<BotBlockData> navigable = BotNavigablePointFilter.filterNavigablePoints(walkable);
             List<BotBlockData> reachable = BotReachabilityResolver.findReachablePoints(BotGeoDataLoader.botPosition, navigable);
 
-            List<BotBlockData> navTargets = BotExplorationTargetPlanner.selectTargets(BotGeoDataLoader.botPosition,
+            List<BotBlockData> navTargets1 = BotExplorationTargetPlanner.selectTargets(BotGeoDataLoader.botPosition,
                                                                                             reachable,
                                                                                             BotExplorationTargetPlanner.Strategy.EVEN_DISTRIBUTED,
                                                                                             24,   // секторное деление
@@ -46,7 +44,10 @@ public class Main {
                                                                                             true, // предпочитать дальние
                                                                                             10    // минимальная дистанция (по scanRadius)
                                                                                         );
-            
+
+
+            List<BotBlockData> navTargets = BotNavigationPlannerWrapper.getNextExplorationTargets(BotGeoDataLoader.botPosition , reachable, 
+                                                                                            24, 24);
 
             HtmlPlotGenerator.generateExplorationPlot(allBlocks, safe, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
 

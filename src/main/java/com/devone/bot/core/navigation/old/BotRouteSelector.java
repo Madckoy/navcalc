@@ -1,11 +1,11 @@
-package com.devone.bot.core.navigation.selectors;
+package com.devone.bot.core.navigation.old;
 
 import java.util.List;
 import java.util.Random;
 
 import com.devone.bot.utils.BotCoordinate3D;
 
-public class BotBotRouteSelector {
+public class BotRouteSelector {
 
     private static final Random RANDOM = new Random();
 
