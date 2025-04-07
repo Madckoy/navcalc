@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.devone.bot.core.navigation.MondayPathfinder;
+import com.devone.bot.utils.BlockMaterialUtils;
 import com.devone.bot.utils.BotBlockData;
 import com.devone.bot.utils.BotCoordinate3D;
 
 public class HtmlPlotGenerator {
 
-    public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotCoordinate3D> walkable,
+    public static void generateExplorationPlot(List<BotBlockData> allBlocks,  List<BotBlockData> safe,  List<BotBlockData> walkable, List<BotBlockData> walkableByThread,
                                                BotCoordinate3D bot,
                                                String filePath) throws IOException {
         StringBuilder html = new StringBuilder();
@@ -21,7 +21,7 @@ public class HtmlPlotGenerator {
 
         // All blocks
         html.append("var allBlocks = { x:[], y:[], z:[], mode:'markers', ");
-        html.append("marker:{size:2, color:[], colorscale:'Viridis'}, "); // color как массив!
+        html.append("marker:{size:10, color:[], colorscale:'Viridis'}, "); // color как массив!
         html.append("type:'scatter3d', name:'All blocks' };");
 
         for (BotBlockData block : allBlocks) {
@@ -29,26 +29,43 @@ public class HtmlPlotGenerator {
             html.append("allBlocks.y.push(").append(block.y).append(");");
             html.append("allBlocks.z.push(").append(block.z).append(");");
             html.append("allBlocks.marker.color.push(")
-                .append("\"").append(MondayPathfinder.getColorCodeForType(block.type)).append("\"").append(");");
+                .append("\"").append(BlockMaterialUtils.getColorCodeForType(block.type)).append("\"").append(");");
         }
 
-        // Reachable
-        html.append("var walkable = { x:[], y:[], z:[], mode:'markers', marker:{size:6, color:'orange'}, type:'scatter3d', name:'walkable' };");
-        for (BotCoordinate3D p : walkable) {
+        // safe
+        html.append("var safe = { x:[], y:[], z:[], mode:'markers', marker:{size:10, color:'gray'}, type:'scatter3d', name:'safe' };");
+        for (BotBlockData p : safe) {
+            html.append("safe.x.push(").append(p.x).append(");");
+            html.append("safe.y.push(").append(p.y).append(");");
+            html.append("safe.z.push(").append(p.z).append(");");
+        }
+
+        // waklable
+        html.append("var walkable = { x:[], y:[], z:[], mode:'markers', marker:{size:10, color:'green'}, type:'scatter3d', name:'walkable' };");
+        for (BotBlockData p : walkable) {
             html.append("walkable.x.push(").append(p.x).append(");");
             html.append("walkable.y.push(").append(p.y).append(");");
             html.append("walkable.z.push(").append(p.z).append(");");
         }
 
+        // walkableByThread
+        html.append("var walkableByThread = { x:[], y:[], z:[], mode:'markers', marker:{size:10, color:'orange'}, type:'scatter3d', name:'walkableByThread' };");
+        for (BotBlockData p : walkableByThread) {
+            html.append("walkableByThread.x.push(").append(p.x).append(");");
+            html.append("walkableByThread.y.push(").append(p.y).append(");");
+            html.append("walkableByThread.z.push(").append(p.z).append(");");
+        }
+
+
         // Bot
         html.append("var bot = { x:[").append(bot.x).append("], y:[").append(bot.y).append("], z:[").append(bot.z)
-            .append("], mode:'markers', marker:{size:8, color:'red'}, type:'scatter3d', name:'Bot' };");
+            .append("], mode:'markers', marker:{size:10, color:'red'}, type:'scatter3d', name:'Bot' };");
 
         // Final plot
-        html.append("Plotly.newPlot('plot', [allBlocks, walkable, bot], {");
+        html.append("Plotly.newPlot('plot', [allBlocks, safe, walkable, walkableByThread, bot], {");
         html.append("margin:{l:0,r:0,b:0,t:30},");
         html.append("scene:{xaxis:{title:'X'},yaxis:{title:'Y'},zaxis:{title:'Z'}},");
-        html.append("title:'Walkable Points — Monday Pathfinder - navcalc v1.17'");
+        html.append("title:'Walkable Points — Pathfinder - navcalc v1.17'");
         html.append("});");        
         html.append("</script></body></html>");
 

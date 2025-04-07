@@ -5,14 +5,12 @@ import java.util.Set;
 
 public class BotBlockData extends BotCoordinate3D {
 
-    private static final Set<String> AIR_TYPES = Set.of("AIR", "CAVE_AIR", "VOID_AIR");
-
     public int x, y, z;
     public String type;
     public boolean bot;  // из JSON
 
     public boolean isAir() {
-        return type != null && AIR_TYPES.contains(type.toUpperCase());
+        return type != null && BlockMaterialUtils.AIR_TYPES.contains(type.toUpperCase());
     } 
     
     public boolean isSolid() {
@@ -36,7 +34,7 @@ public class BotBlockData extends BotCoordinate3D {
     public boolean isPassableAndSafe() {
         if (type == null) return false;
         String t = type.toUpperCase();
-        return AIR_TYPES.contains(t) || t.equals("TALL_GRASS") || t.equals("SNOW") || t.equals("FLOWER");
+        return BlockMaterialUtils.AIR_TYPES.contains(t) || t.equals("TALL_GRASS") || t.equals("SNOW") || t.equals("FLOWER");
     }
 
     @Override
