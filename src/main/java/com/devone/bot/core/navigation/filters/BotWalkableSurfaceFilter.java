@@ -2,6 +2,7 @@ package com.devone.bot.core.navigation.filters;
 
 import com.devone.bot.utils.BlockMaterialUtils;
 import com.devone.bot.utils.BotBlockData;
+import com.devone.bot.utils.BotCoordinate3D;
 
 import java.util.*;
 
@@ -13,36 +14,22 @@ public class BotWalkableSurfaceFilter {
     public static List<BotBlockData> filter(List<BotBlockData> blocks) {
         List<BotBlockData> result = new ArrayList<>();
 
-        // Создаем карту блоков для быстрого поиска
-        Map<String, BotBlockData> blockMap = new HashMap<>();
+        // Создаем карту блоков по координатам
+        Map<BotCoordinate3D, BotBlockData> blockMap = new HashMap<>();
         for (BotBlockData b : blocks) {
-            String key = b.x + "," + b.y + "," + b.z;
-            blockMap.put(key, b);
+            blockMap.put(new BotCoordinate3D(b.x, b.y, b.z), b);
         }
 
-        // Проходим по всем блокам
         for (BotBlockData block : blocks) {
+            if (block.isAir()) continue; // Базовые блоки не должны быть воздухом
 
-            if(block.isAir()) {
-                //result.add(block); //
-                continue;  // Пропускаем блок 
-            }
+            BotCoordinate3D above1 = new BotCoordinate3D(block.x, block.y + 1, block.z);
+            BotCoordinate3D above2 = new BotCoordinate3D(block.x, block.y + 2, block.z);
 
-            int x = block.x;
-            int y = block.y;
-            int z = block.z;
+            boolean airAbove1 = !blockMap.containsKey(above1) || blockMap.get(above1).isAir();
+            boolean airAbove2 = !blockMap.containsKey(above2) || blockMap.get(above2).isAir();
 
-            // Проверяем два уровня воздуха сверху (y+1 и y+2)
-            String key1 = x + "," + (y + 1) + "," + z;
-            String key2 = x + "," + (y + 2) + "," + z;
-
-            boolean airAbove1 = !blockMap.containsKey(key1) || BlockMaterialUtils.isAir(blockMap.get(key1).type);
-            boolean airAbove2 = !blockMap.containsKey(key2) || BlockMaterialUtils.isAir(blockMap.get(key2).type);
-            
-            
-            System.out.println(block.type + " " + airAbove1 + " : " + airAbove2);
-
-            // Если над блоком два уровня воздуха, добавляем его в результат
+            // Если над блоком два уровня воздуха — он пригоден для ходьбы
             if (airAbove1 && airAbove2) {
                 result.add(block);
             }

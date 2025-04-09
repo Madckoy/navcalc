@@ -1,7 +1,7 @@
-
 package com.devone.bot.core.navigation.filters;
 
 import com.devone.bot.utils.BotBlockData;
+import com.devone.bot.utils.BotCoordinate3D;
 
 import java.util.*;
 
@@ -11,9 +11,9 @@ public class BotNavigablePointFilter {
      * Оставляет только те точки, к которым можно перейти хотя бы с одной соседней.
      */
     public static List<BotBlockData> filter(List<BotBlockData> walkableBlocks) {
-        Map<String, BotBlockData> map = new HashMap<>();
+        Map<BotCoordinate3D, BotBlockData> map = new HashMap<>();
         for (BotBlockData block : walkableBlocks) {
-            map.put(key(block.x, block.y, block.z), block);
+            map.put(new BotCoordinate3D(block.x, block.y, block.z), block);
         }
 
         List<BotBlockData> result = new ArrayList<>();
@@ -27,7 +27,7 @@ public class BotNavigablePointFilter {
         return result;
     }
 
-    private static boolean hasNavigableNeighbor(BotBlockData block, Map<String, BotBlockData> map) {
+    private static boolean hasNavigableNeighbor(BotBlockData block, Map<BotCoordinate3D, BotBlockData> map) {
         int x = block.x;
         int y = block.y;
         int z = block.z;
@@ -36,21 +36,16 @@ public class BotNavigablePointFilter {
             for (int dy = -1; dy <= 1; dy++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue; // Пропускаем саму точку
-
                     if (Math.abs(dy) > 1) continue; // Прыжки на 2 и более блоков запрещены
 
-                    String neighborKey = key(x + dx, y + dy, z + dz);
-                    if (map.containsKey(neighborKey)) {
-                        return true; // Есть хотя бы один сосед
+                    BotCoordinate3D neighbor = new BotCoordinate3D(x + dx, y + dy, z + dz);
+                    if (map.containsKey(neighbor)) {
+                        return true;
                     }
                 }
             }
         }
 
         return false;
-    }
-
-    private static String key(int x, int y, int z) {
-        return x + "," + y + "," + z;
     }
 }
