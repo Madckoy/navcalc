@@ -11,12 +11,6 @@ public class BotCoordinate3D {
         this.z = 0;
     }
 
-    public BotCoordinate3D(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.z = 0;
-    }
-    
     public BotCoordinate3D(int x, int y, int z) {
         this.x = x;
         this.y = y;

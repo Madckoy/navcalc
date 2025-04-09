@@ -4,7 +4,7 @@ public class BotBlockData extends BotCoordinate3D {
 
 
     public String type;
-    public boolean bot;  // из JSON
+    public boolean bot;  // из JSON  
 
     public boolean isAir() {
         return type != null && BlockMaterialUtils.AIR_TYPES.contains(type.toUpperCase());
