@@ -12,7 +12,7 @@ public class HtmlPlotGenerator {
 
     private static final double HALF = 0.5;
 
-    private static int addCube(StringBuilder js, BotBlockData block, int vertexOffset, String color) {
+    private static int addCube(StringBuilder js, BotBlockData block, int vertexOffset, String color, String tooltip) {
         double x = block.x;
         double y = block.y;
         double z = block.z;
@@ -22,8 +22,8 @@ public class HtmlPlotGenerator {
         double x0 = x - HALF, x1 = x + HALF;
         double y0 = y - HALF, y1 = y0 + heightFactor;
         double z0 = z - HALF, z1 = z + HALF;
-        
-        // Вершины куба (8 точек)
+    
+        // Вершины куба
         js.append("x.push(").append(x0).append("); x.push(").append(x1).append("); x.push(").append(x1).append("); x.push(").append(x0).append(");");
         js.append("x.push(").append(x0).append("); x.push(").append(x1).append("); x.push(").append(x1).append("); x.push(").append(x0).append(");");
     
@@ -33,7 +33,7 @@ public class HtmlPlotGenerator {
         js.append("z.push(").append(z0).append("); z.push(").append(z0).append("); z.push(").append(z0).append("); z.push(").append(z0).append(");");
         js.append("z.push(").append(z1).append("); z.push(").append(z1).append("); z.push(").append(z1).append("); z.push(").append(z1).append(");");
     
-        // Треугольники (12 граней: 6 * 2)
+        // Треугольники
         int[][] faces = {
             {0, 1, 2}, {0, 2, 3},
             {4, 5, 6}, {4, 6, 7},
@@ -51,22 +51,28 @@ public class HtmlPlotGenerator {
     
         for (int f = 0; f < faces.length; f++) {
             js.append("facecolor.push('").append(color).append("');");
+            js.append("text.push('").append(tooltip.replace("'", "\\'")).append("');");
         }
     
         return vertexOffset + 8;
     }
 
-    private static void addMesh3dSection(StringBuilder html, List<BotBlockData> blocks, String varName, String colorSource, boolean useMaterialColors) {
-        html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], opacity:0.5, name:'")
-            .append(varName).append("', showlegend:true};\n");
+    private static void addMesh3dSection(StringBuilder html, List<BotBlockData> blocks, String varName, String fallbackColor, boolean useMaterialColors) {
+        html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], ")
+            .append("facecolor:[], text:[], opacity:0.5, name:'").append(varName)
+            .append("', showlegend:true, hoverinfo:'text'};\n");
+    
         html.append("var x = ").append(varName).append(".x, y = ").append(varName).append(".y, z = ").append(varName).append(".z;\n");
         html.append("var i = ").append(varName).append(".i, j = ").append(varName).append(".j, k = ").append(varName).append(".k;\n");
         html.append("var facecolor = ").append(varName).append(".facecolor;\n");
-
+        html.append("var text = ").append(varName).append(".text;\n");
+    
         int vertexOffset = 0;
         for (BotBlockData block : blocks) {
-            String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.type) : colorSource;
-            vertexOffset = addCube(html, block, vertexOffset, color);
+            String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.type) : fallbackColor;
+            String tooltip = String.format("Type: %s<br>X: %d<br>Y: %d<br>Z: %d",
+                    block.type != null ? block.type : "UNKNOWN", block.x, block.y, block.z);
+            vertexOffset = addCube(html, block, vertexOffset, color, tooltip);
         }
     }
 
@@ -98,7 +104,7 @@ public class HtmlPlotGenerator {
             botBlock.x = bot.x;
             botBlock.y = bot.y + dy;
             botBlock.z = bot.z;
-            vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000");
+            vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000", "Bot"); 
         }
 
         // Final plot
