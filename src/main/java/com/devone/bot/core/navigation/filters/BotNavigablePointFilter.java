@@ -10,7 +10,7 @@ public class BotNavigablePointFilter {
     /**
      * Оставляет только те точки, к которым можно перейти хотя бы с одной соседней.
      */
-    public static List<BotBlockData> filterNavigablePoints(List<BotBlockData> walkableBlocks) {
+    public static List<BotBlockData> filter(List<BotBlockData> walkableBlocks) {
         Map<String, BotBlockData> map = new HashMap<>();
         for (BotBlockData block : walkableBlocks) {
             map.put(key(block.x, block.y, block.z), block);

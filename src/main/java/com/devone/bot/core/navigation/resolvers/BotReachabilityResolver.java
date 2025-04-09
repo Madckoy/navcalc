@@ -1,4 +1,3 @@
-
 package com.devone.bot.core.navigation.resolvers;
 
 import com.devone.bot.utils.BotBlockData;
@@ -12,26 +11,27 @@ public class BotReachabilityResolver {
         {1, 0}, {-1, 0}, {0, 1}, {0, -1}
     };
 
-    public static List<BotBlockData> findReachablePoints(BotCoordinate3D botPos, List<BotBlockData> navigableBlocks) {
-        Map<String, BotBlockData> map = new HashMap<>();
+    public static List<BotBlockData> resolve(BotCoordinate3D botPos, List<BotBlockData> navigableBlocks) {
+        // Начинаем с блока под ботом
+        BotCoordinate3D start = new BotCoordinate3D(botPos.x, botPos.y - 1, botPos.z);
+
+        Map<BotCoordinate3D, BotBlockData> map = new HashMap<>();
         for (BotBlockData b : navigableBlocks) {
-            map.put(b.x + "," + b.y + "," + b.z, b);
+            map.put(new BotCoordinate3D(b.x, b.y, b.z), b);
         }
 
-        Set<String> visited = new HashSet<>();
+        Set<BotCoordinate3D> visited = new HashSet<>();
         Queue<BotCoordinate3D> queue = new LinkedList<>();
-        queue.add(botPos);
+        queue.add(start);
 
         List<BotBlockData> reachable = new ArrayList<>();
 
         while (!queue.isEmpty()) {
             BotCoordinate3D current = queue.poll();
-            String key = current.x + "," + current.y + "," + current.z;
+            if (visited.contains(current)) continue;
+            visited.add(current);
 
-            if (visited.contains(key)) continue;
-            visited.add(key);
-
-            BotBlockData data = map.get(key);
+            BotBlockData data = map.get(current);
             if (data != null) {
                 reachable.add(data);
 
@@ -39,14 +39,14 @@ public class BotReachabilityResolver {
                     int dx = d[0];
                     int dz = d[1];
 
-                    for (int dy = -1; dy <= 1; dy++) { // проверка по высоте
+                    for (int dy = -1; dy <= 1; dy++) {
                         int nx = current.x + dx;
                         int ny = current.y + dy;
                         int nz = current.z + dz;
 
-                        String nKey = nx + "," + ny + "," + nz;
-                        if (!visited.contains(nKey) && map.containsKey(nKey)) {
-                            queue.add(new BotCoordinate3D(nx, ny, nz));
+                        BotCoordinate3D neighbor = new BotCoordinate3D(nx, ny, nz);
+                        if (!visited.contains(neighbor) && map.containsKey(neighbor)) {
+                            queue.add(neighbor);
                         }
                     }
                 }
@@ -54,9 +54,5 @@ public class BotReachabilityResolver {
         }
 
         return reachable;
-    }
-
-    private static String key(int x, int y, int z) {
-        return x + "," + y + "," + z;
     }
 }

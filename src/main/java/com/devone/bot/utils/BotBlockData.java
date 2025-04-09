@@ -14,6 +14,10 @@ public class BotBlockData extends BotCoordinate3D {
         return type != null && BlockMaterialUtils.COVER_TYPES.contains(type.toUpperCase());
     }   
     
+    public boolean isDangerous() {
+        return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());
+    } 
+
     public boolean isSolid() {
         // сюда можно добавлять исключения по мере надобности
         if (type == null) return false;

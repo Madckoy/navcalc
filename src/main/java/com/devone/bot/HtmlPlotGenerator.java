@@ -13,6 +13,7 @@ public class HtmlPlotGenerator {
     private static final double HALF = 0.5;
 
     private static int addCube(StringBuilder js, BotBlockData block, int vertexOffset, String color, String tooltip) {
+
         double x = block.x;
         double y = block.y;
         double z = block.z;
@@ -58,6 +59,12 @@ public class HtmlPlotGenerator {
     }
 
     private static void addMesh3dSection(StringBuilder html, List<BotBlockData> blocks, String varName, String fallbackColor, boolean useMaterialColors) {
+
+        if (blocks == null || blocks.isEmpty()) {
+            System.err.println("Warning: No blocks to plot for " + varName);
+            return;
+        }
+
         html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], ")
             .append("facecolor:[], text:[], opacity:0.5, name:'").append(varName)
             .append("', showlegend:true, hoverinfo:'text'};\n");
@@ -76,7 +83,7 @@ public class HtmlPlotGenerator {
         }
     }
 
-    public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotBlockData> safe, List<BotBlockData> walkable,
+    public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotBlockData> trimmed, List<BotBlockData> solid, List<BotBlockData> walkable,
                                                List<BotBlockData> navigable, List<BotBlockData> reachable,
                                                List<BotBlockData> navTargets, BotCoordinate3D bot,
                                                String filePath) throws IOException {
@@ -85,8 +92,9 @@ public class HtmlPlotGenerator {
         html.append("<html><head><script src='https://cdn.plot.ly/plotly-latest.min.js'></script></head><body>");
         html.append("<div id='plot' style='width:100%;height:100vh;'></div><script>\n");
 
-        addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", true);
-        addMesh3dSection(html, safe, "safe", "gray", false);
+        addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", false);
+        addMesh3dSection(html, trimmed, "trimmed", "#BBBBBB", true);
+        addMesh3dSection(html, solid, "solid", "gray", false);
         addMesh3dSection(html, walkable, "walkable", "green", false);
         addMesh3dSection(html, navigable, "navigable", "blue", false);
         addMesh3dSection(html, reachable, "reachable", "orange", false);
@@ -114,7 +122,7 @@ public class HtmlPlotGenerator {
         }
 
         // Final plot
-        html.append("Plotly.newPlot('plot', [allBlocks, safe, walkable, navigable, reachable, navTargets, bot], {");
+        html.append("Plotly.newPlot('plot', [allBlocks, trimmed, solid, walkable, navigable, reachable, navTargets, bot], {");
         html.append("margin:{l:0,r:0,b:0,t:30},");
         html.append("scene:{xaxis:{title:'X'}, yaxis:{title:'Y'}, zaxis:{title:'Z'}},");
         html.append("title:'3D Navigation Map — Blocks as Cubes'});\n");

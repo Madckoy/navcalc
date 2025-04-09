@@ -9,7 +9,7 @@ public class BlockMaterialUtils {
     public static final Set<String> AIR_TYPES = Set.of("AIR", "CAVE_AIR", "VOID_AIR");
 
     public static final Set<String> UNSAFE_TYPES = Set.of(
-        "AIR", "CAVE_AIR", "VOID_AIR", "WATER", "LAVA", "CACTUS", "FIRE", "MAGMA_BLOCK"
+        "WATER", "LAVA", "CACTUS", "FIRE", "MAGMA_BLOCK"
     );
 
     public static final Set<String> COVER_TYPES = Set.of(

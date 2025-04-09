@@ -1,6 +1,7 @@
 package com.devone.bot;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Properties;
@@ -9,8 +10,8 @@ import com.devone.bot.core.navigation.filters.BotVerticalRangeFilter;
 import com.devone.bot.core.navigation.BotExplorationTargetPlanner;
 import com.devone.bot.core.navigation.BotNavigationPlannerWrapper;
 import com.devone.bot.core.navigation.filters.BotNavigablePointFilter;
-import com.devone.bot.core.navigation.filters.BotSafeBlockFilter;
-import com.devone.bot.core.navigation.filters.BotThreadSurfaceFilter;
+import com.devone.bot.core.navigation.filters.BotSolidBlockFilter;
+import com.devone.bot.core.navigation.filters.BotWalkableSurfaceFilter;
 import com.devone.bot.core.navigation.resolvers.BotReachabilityResolver;
 import com.devone.bot.utils.BotBlockData;
 import com.devone.bot.utils.BotGeoDataLoader;;
@@ -30,26 +31,21 @@ public class Main {
             System.out.println("Bot position: " + BotGeoDataLoader.botPosition);
 
             List<BotBlockData> allBlocks = BotGeoDataLoader.blocks;
-            List<BotBlockData> trimmedBlocks = BotVerticalRangeFilter.trimByYRange(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
-            List<BotBlockData> safe = BotSafeBlockFilter.extractSafeBlocks(trimmedBlocks);
-            List<BotBlockData> walkable = BotThreadSurfaceFilter.filterWalkableSurfaceBlocks(safe);
-            List<BotBlockData> navigable = BotNavigablePointFilter.filterNavigablePoints(walkable);
-            List<BotBlockData> reachable = BotReachabilityResolver.findReachablePoints(BotGeoDataLoader.botPosition, navigable);
 
-            List<BotBlockData> navTargets1 = BotExplorationTargetPlanner.selectTargets(BotGeoDataLoader.botPosition,
-                                                                                            reachable,
-                                                                                            BotExplorationTargetPlanner.Strategy.EVEN_DISTRIBUTED,
-                                                                                            24,   // секторное деление
-                                                                                            8,    // максимум целей
-                                                                                            true, // предпочитать дальние
-                                                                                            10    // минимальная дистанция (по scanRadius)
-                                                                                        );
+            // Фильтруем блоки по высоте, чтобы оставить только те, которые находятся в пределах 2 блоков от бота
+            List<BotBlockData> trimmed       = BotVerticalRangeFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
 
+            List<BotBlockData> solid          = BotSolidBlockFilter.filter(trimmed);
 
-            List<BotBlockData> navTargets = BotNavigationPlannerWrapper.getNextExplorationTargets(BotGeoDataLoader.botPosition , reachable, 
-                                                                                            24, 24);
+            List<BotBlockData> walkable      = BotWalkableSurfaceFilter.filter(solid);
 
-            HtmlPlotGenerator.generateExplorationPlot(allBlocks, safe, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
+            List<BotBlockData> navigable     = BotNavigablePointFilter.filter(walkable);
+
+            List<BotBlockData> reachable     = BotReachabilityResolver.resolve(BotGeoDataLoader.botPosition, navigable);
+
+            List<BotBlockData> navTargets    = BotNavigationPlannerWrapper.getNextExplorationTargets(BotGeoDataLoader.botPosition, reachable);
+
+            HtmlPlotGenerator.generateExplorationPlot(allBlocks, trimmed, solid, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
 
             System.out.println("Saved visualization to nav_report.html");
 

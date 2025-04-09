@@ -71,46 +71,93 @@
      }
  
      private static List<BotBlockData> findEvenlyDistributedTargets(
-             List<BotBlockData> reachable,
-             BotCoordinate3D bot,
-             int sectors,
-             int maxTargets,
-             boolean preferDistant,
-             int scanRadius) {
- 
-         double minRadius = Math.max(2.0, scanRadius * 1.0);
-         Map<Integer, BotBlockData> sectorMap = new HashMap<>();
- 
-         for (BotBlockData point : reachable) {
-             if (point.x == bot.x && point.z == bot.z) continue;
- 
-             double dx = point.x - bot.x;
-             double dy = point.y - bot.y;
-             double dz = point.z - bot.z;
-             double distSq = dx * dx + dy * dy + dz * dz;
-             double dist = Math.sqrt(distSq);
-             if (dist < minRadius) continue;
- 
-             double angle = Math.atan2(dz, dx);
-             int sector = (int) ((angle + Math.PI) / (2 * Math.PI) * sectors) % sectors;
- 
-             BotBlockData current = sectorMap.get(sector);
- 
-             if (current == null ||
-                     (preferDistant && distSq > squaredDistance(current, bot)) ||
-                     (!preferDistant && distSq < squaredDistance(current, bot))) {
-                 sectorMap.put(sector, point);
-             }
-         }
- 
-         return sectorMap.values().stream()
-                 .sorted(Comparator.comparingDouble(p -> -squaredDistance(p, bot)))
-                 .limit(maxTargets)
-                 .collect(Collectors.toList());
-     }
- 
-     private static double squaredDistance(BotBlockData point, BotCoordinate3D bot) {
-         return Math.pow(point.x - bot.x, 2) + Math.pow(point.y - bot.y, 2) + Math.pow(point.z - bot.z, 2);
-     }
+        List<BotBlockData> reachable,
+        BotCoordinate3D bot,
+        int sectors,
+        int maxTargetsInput,
+        boolean preferDistant,
+        int scanRadius) {
+
+    if (reachable == null || reachable.isEmpty()) return List.of();
+
+    // 📐 Адаптивный maxTargets
+    int maxTargets = estimateAdaptiveMaxTargets(reachable, scanRadius);
+    if (maxTargets == 0) return List.of();
+
+    double minRadius = (scanRadius > 3) ? scanRadius * 0.5 : 0.0;
+    Map<Integer, BotBlockData> sectorMap = new HashMap<>();
+
+    for (BotBlockData point : reachable) {
+        if (point.x == bot.x && point.z == bot.z) continue;
+
+        double dx = point.x - bot.x;
+        double dy = point.y - bot.y;
+        double dz = point.z - bot.z;
+        double distSq = dx * dx + dy * dy + dz * dz;
+        double dist = Math.sqrt(distSq);
+
+        if (dist < minRadius) continue;
+
+        double angle = Math.atan2(dz, dx);
+        int sector = (int) ((angle + Math.PI) / (2 * Math.PI) * sectors) % sectors;
+
+        BotBlockData current = sectorMap.get(sector);
+
+        if (current == null ||
+                (preferDistant && distSq > squaredDistance(current, bot)) ||
+                (!preferDistant && distSq < squaredDistance(current, bot))) {
+            sectorMap.put(sector, point);
+        }
+    }
+
+    // 🧱 Fallback: добираем самые удалённые
+    if (sectorMap.size() < maxTargets) {
+        reachable.stream()
+                .filter(p -> !sectorMap.containsValue(p))
+                .sorted(Comparator.comparingDouble(p -> -squaredDistance(p, bot)))
+                .limit(maxTargets - sectorMap.size())
+                .forEach(p -> sectorMap.put(sectorMap.size() + 1000, p));
+    }
+
+    // 🎯 Фильтрация по минимальному расстоянию между целями
+    List<BotBlockData> filtered = filterByDistance(
+            sectorMap.values().stream()
+                    .sorted(Comparator.comparingDouble(p -> -squaredDistance(p, bot)))
+                    .collect(Collectors.toList()),
+            3.0  // минимальная дистанция между целями
+    );
+
+    return filtered.stream()
+            .limit(maxTargets)
+            .collect(Collectors.toList());
+}
+
+
+
+    private static int estimateAdaptiveMaxTargets(List<BotBlockData> reachable, int scanRadius) {
+        if (reachable == null || reachable.isEmpty()) return 0;
+    
+        double area = Math.PI * scanRadius * scanRadius;
+        double densityFactor = 0.8;
+    
+        int suggested = (int) Math.round(Math.min(reachable.size(), area * densityFactor));
+        return Math.max(1, Math.min(suggested, reachable.size()));
+    }
+    
+    private static double squaredDistance(BotBlockData a, BotCoordinate3D b) {
+        return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) + Math.pow(a.z - b.z, 2);
+    }
+    
+    private static List<BotBlockData> filterByDistance(List<BotBlockData> candidates, double minDist) {
+        List<BotBlockData> result = new ArrayList<>();
+        for (BotBlockData candidate : candidates) {
+            boolean tooClose = result.stream()
+                    .anyMatch(p -> squaredDistance(p, candidate) < minDist * minDist);
+            if (!tooClose) {
+                result.add(candidate);
+            }
+        }
+        return result;
+    }
  }
  
