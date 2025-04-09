@@ -79,7 +79,8 @@ public class HtmlPlotGenerator {
             String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.type) : fallbackColor;
             String tooltip = String.format("Type: %s<br>X: %d<br>Y: %d<br>Z: %d",
                     block.type != null ? block.type : "UNKNOWN", block.x, block.y, block.z);
-            vertexOffset = addCube(html, block, vertexOffset, color, tooltip);
+
+                vertexOffset = addCube(html, block, vertexOffset, color, tooltip);
         }
     }
 
@@ -92,10 +93,10 @@ public class HtmlPlotGenerator {
         html.append("<html><head><script src='https://cdn.plot.ly/plotly-latest.min.js'></script></head><body>");
         html.append("<div id='plot' style='width:100%;height:100vh;'></div><script>\n");
 
-        addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", false);
+        addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", true);
         addMesh3dSection(html, trimmed, "trimmed", "#BBBBBB", true);
-        addMesh3dSection(html, solid, "solid", "gray", false);
-        addMesh3dSection(html, walkable, "walkable", "green", false);
+        addMesh3dSection(html, solid, "solid", "#AABBBB", true);
+        addMesh3dSection(html, walkable, "walkable", "green", true);
         addMesh3dSection(html, navigable, "navigable", "blue", false);
         addMesh3dSection(html, reachable, "reachable", "orange", false);
         addMesh3dSection(html, navTargets, "navTargets", "purple", false);

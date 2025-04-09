@@ -3,6 +3,7 @@ package com.devone.bot.core.navigation.filters;
 import java.util.*;
 
 import com.devone.bot.utils.BotBlockData;
+import com.devone.bot.utils.BotCoordinate3D;
 
 public class BotSolidBlockFilter {
 
@@ -18,9 +19,9 @@ public class BotSolidBlockFilter {
         // Проходим по всем блокам и применяем фильтрацию
         for (BotBlockData block : blocks) {
             // 1. Исключаем покрытия (например, снег, трава, и т.д.)
-            if (block.isCover()) {
-                continue;  // Пропускаем покрытия
-            }
+            //if (block.isCover()) {
+            //    continue;  // Пропускаем покрытия
+            //}
 
             // 2. Исключаем опасные блоки (например, вода, лава)
             if (block.isDangerous()) {
@@ -33,4 +34,5 @@ public class BotSolidBlockFilter {
         
         return result;
     }
+
 }

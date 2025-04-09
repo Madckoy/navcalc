@@ -10,6 +10,7 @@ import com.devone.bot.core.navigation.filters.BotVerticalRangeFilter;
 import com.devone.bot.core.navigation.BotExplorationTargetPlanner;
 import com.devone.bot.core.navigation.BotNavigationPlannerWrapper;
 import com.devone.bot.core.navigation.filters.BotNavigablePointFilter;
+import com.devone.bot.core.navigation.filters.BotRemoveAirFilter;
 import com.devone.bot.core.navigation.filters.BotSolidBlockFilter;
 import com.devone.bot.core.navigation.filters.BotWalkableSurfaceFilter;
 import com.devone.bot.core.navigation.resolvers.BotReachabilityResolver;
@@ -32,6 +33,7 @@ public class Main {
 
             List<BotBlockData> allBlocks = BotGeoDataLoader.blocks;
 
+
             // Фильтруем блоки по высоте, чтобы оставить только те, которые находятся в пределах 2 блоков от бота
             List<BotBlockData> trimmed       = BotVerticalRangeFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
 
@@ -39,13 +41,21 @@ public class Main {
 
             List<BotBlockData> walkable      = BotWalkableSurfaceFilter.filter(solid);
 
-            List<BotBlockData> navigable     = BotNavigablePointFilter.filter(walkable);
+            List<BotBlockData> navigable     = BotNavigablePointFilter.filter(BotRemoveAirFilter.filter(walkable));
 
             List<BotBlockData> reachable     = BotReachabilityResolver.resolve(BotGeoDataLoader.botPosition, navigable);
 
             List<BotBlockData> navTargets    = BotNavigationPlannerWrapper.getNextExplorationTargets(BotGeoDataLoader.botPosition, reachable);
 
-            HtmlPlotGenerator.generateExplorationPlot(allBlocks, trimmed, solid, walkable, navigable, reachable, navTargets, BotGeoDataLoader.botPosition, "nav_report.html");
+            HtmlPlotGenerator.generateExplorationPlot(BotRemoveAirFilter.filter(allBlocks), 
+                                                     BotRemoveAirFilter.filter(trimmed), 
+                                                     BotRemoveAirFilter.filter(solid), 
+                                                     BotRemoveAirFilter.filter(walkable), 
+                                                     navigable, 
+                                                     reachable, 
+                                                     navTargets, 
+                                                     BotGeoDataLoader.botPosition, 
+                                                     "nav_report.html");
 
             System.out.println("Saved visualization to nav_report.html");
 

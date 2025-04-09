@@ -1,6 +1,6 @@
 package com.devone.bot.core.navigation.filters;
 
-import com.devone.bot.utils.BlockMaterialUtils;
+
 import com.devone.bot.utils.BotBlockData;
 import com.devone.bot.utils.BotCoordinate3D;
 
@@ -21,16 +21,21 @@ public class BotWalkableSurfaceFilter {
         }
 
         for (BotBlockData block : blocks) {
-            if (block.isAir()) continue; // Базовые блоки не должны быть воздухом
 
             BotCoordinate3D above1 = new BotCoordinate3D(block.x, block.y + 1, block.z);
             BotCoordinate3D above2 = new BotCoordinate3D(block.x, block.y + 2, block.z);
 
-            boolean airAbove1 = !blockMap.containsKey(above1) || blockMap.get(above1).isAir();
-            boolean airAbove2 = !blockMap.containsKey(above2) || blockMap.get(above2).isAir();
+            BotBlockData blockAbove1 = blockMap.get(above1);
+            BotBlockData blockAbove2 = blockMap.get(above2);
+
+            // Проверяем, что блоки над текущим блоком существуют
+            if (blockAbove1 == null || blockAbove2 == null) { 
+                System.out.println("Block above is null: " + block.toString());
+                continue; // Пропускаем, если блоков нет
+            }
 
             // Если над блоком два уровня воздуха — он пригоден для ходьбы
-            if (airAbove1 && airAbove2) {
+            if ((blockAbove1.isAir() && blockAbove2.isAir()) || blockAbove1.isBot() || blockAbove1.isCover()) {
                 result.add(block);
             }
         }

@@ -1,15 +1,23 @@
 package com.devone.bot.core.navigation.filters;
 
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import com.devone.bot.utils.BotBlockData;
 
 public class BotVerticalRangeFilter {
     public static List<BotBlockData> filter(List<BotBlockData> blocks, int botY, int range) {
-        return blocks.stream()
-            .filter(block -> Math.abs(block.y - botY) <= range)
-            .collect(Collectors.toList());
+        List<BotBlockData> result = new ArrayList<>();
+        
+        for (BotBlockData block : blocks) {
+            // Проверяем, что блок находится в пределах range от botY
+            if ((block.y >= botY - range) && (block.y <= botY + range)) {
+                result.add(block);
+            }
+        }
+        
+        return result;
     }
 }
