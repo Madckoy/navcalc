@@ -91,12 +91,14 @@ public class HtmlPlotGenerator {
         addMesh3dSection(html, navigable, "navigable", "blue", false);
         addMesh3dSection(html, reachable, "reachable", "orange", false);
         addMesh3dSection(html, navTargets, "navTargets", "purple", false);
+    
 
         // Bot as two vertically stacked blocks (bottom + head)
-        html.append("var bot = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], opacity:1.0, name:'Bot', showlegend:true};\n");
+        html.append("var bot = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], text:[], opacity:1.0, name:'Bot', showlegend:true, hoverinfo:'text'};\n");
         html.append("var x = bot.x, y = bot.y, z = bot.z;\n");
         html.append("var i = bot.i, j = bot.j, k = bot.k;\n");
         html.append("var facecolor = bot.facecolor;\n");
+        html.append("var text = bot.text;\n");
 
         int vertexOffset = 0;
         for (int dy = 0; dy <= 1; dy++) {
@@ -104,7 +106,11 @@ public class HtmlPlotGenerator {
             botBlock.x = bot.x;
             botBlock.y = bot.y + dy;
             botBlock.z = bot.z;
-            vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000", "Bot"); 
+
+            String label = (dy == 0) ? "Bot Base" : "Bot Head";
+            String tooltip = String.format("%s<br>X: %d<br>Y: %d<br>Z: %d", label, botBlock.x, botBlock.y, botBlock.z);
+
+            vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000", tooltip);
         }
 
         // Final plot
