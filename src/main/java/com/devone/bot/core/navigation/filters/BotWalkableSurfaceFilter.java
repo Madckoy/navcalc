@@ -30,7 +30,7 @@ public class BotWalkableSurfaceFilter {
 
             // Проверяем, что блоки над текущим блоком существуют
             if (blockAbove1 == null || blockAbove2 == null) { 
-                System.out.println("Block above is null: " + block.toString());
+                //System.out.println("Block above is null: " + block.toString());
                 continue; // Пропускаем, если блоков нет
             }
 
