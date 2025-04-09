@@ -35,7 +35,7 @@ public class Main {
             // Фильтруем блоки по высоте, чтобы оставить только те, которые находятся в пределах 2 блоков от бота
             List<BotBlockData> trimmed       = BotVerticalRangeFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.botPosition.y, 2);//relative!!!
 
-            List<BotBlockData> solid          = BotSolidBlockFilter.filter(trimmed);
+            List<BotBlockData> solid         = BotSolidBlockFilter.filter(trimmed);
 
             List<BotBlockData> walkable      = BotWalkableSurfaceFilter.filter(solid);
 
