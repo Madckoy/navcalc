@@ -16,42 +16,43 @@ public class HtmlPlotGenerator {
         double x = block.x;
         double y = block.y;
         double z = block.z;
-
+    
+        double heightFactor = block.type != null && block.isCover() ? 0.25 : 1.0;
+    
         double x0 = x - HALF, x1 = x + HALF;
-        double y0 = y - HALF, y1 = y + HALF;
+        double y0 = y - HALF, y1 = y0 + heightFactor;
         double z0 = z - HALF, z1 = z + HALF;
-
+        
         // Вершины куба (8 точек)
         js.append("x.push(").append(x0).append("); x.push(").append(x1).append("); x.push(").append(x1).append("); x.push(").append(x0).append(");");
         js.append("x.push(").append(x0).append("); x.push(").append(x1).append("); x.push(").append(x1).append("); x.push(").append(x0).append(");");
-
+    
         js.append("y.push(").append(y0).append("); y.push(").append(y0).append("); y.push(").append(y1).append("); y.push(").append(y1).append(");");
         js.append("y.push(").append(y0).append("); y.push(").append(y0).append("); y.push(").append(y1).append("); y.push(").append(y1).append(");");
-
+    
         js.append("z.push(").append(z0).append("); z.push(").append(z0).append("); z.push(").append(z0).append("); z.push(").append(z0).append(");");
         js.append("z.push(").append(z1).append("); z.push(").append(z1).append("); z.push(").append(z1).append("); z.push(").append(z1).append(");");
-
-        // Треугольники (12 граней: 6 граней * 2 треугольника)
+    
+        // Треугольники (12 граней: 6 * 2)
         int[][] faces = {
-            {0, 1, 2}, {0, 2, 3}, // bottom
-            {4, 5, 6}, {4, 6, 7}, // top
-            {0, 1, 5}, {0, 5, 4}, // front
-            {2, 3, 7}, {2, 7, 6}, // back
-            {1, 2, 6}, {1, 6, 5}, // right
-            {3, 0, 4}, {3, 4, 7}  // left
+            {0, 1, 2}, {0, 2, 3},
+            {4, 5, 6}, {4, 6, 7},
+            {0, 1, 5}, {0, 5, 4},
+            {2, 3, 7}, {2, 7, 6},
+            {1, 2, 6}, {1, 6, 5},
+            {3, 0, 4}, {3, 4, 7}
         };
-
+    
         for (int[] face : faces) {
             js.append("i.push(").append(vertexOffset + face[0]).append(");");
             js.append("j.push(").append(vertexOffset + face[1]).append(");");
             js.append("k.push(").append(vertexOffset + face[2]).append(");");
         }
-
-        // Цвет каждой грани
+    
         for (int f = 0; f < faces.length; f++) {
             js.append("facecolor.push('").append(color).append("');");
         }
-
+    
         return vertexOffset + 8;
     }
 

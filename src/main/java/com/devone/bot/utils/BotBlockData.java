@@ -9,6 +9,10 @@ public class BotBlockData extends BotCoordinate3D {
     public boolean isAir() {
         return type != null && BlockMaterialUtils.AIR_TYPES.contains(type.toUpperCase());
     } 
+
+    public boolean isCover() {
+        return type != null && BlockMaterialUtils.COVER_TYPES.contains(type.toUpperCase());
+    }   
     
     public boolean isSolid() {
         // сюда можно добавлять исключения по мере надобности
