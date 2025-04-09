@@ -56,7 +56,10 @@ public class HtmlPlotGenerator {
     }
 
     private static void addMesh3dSection(StringBuilder html, List<BotBlockData> blocks, String varName, String colorSource, boolean useMaterialColors) {
-        html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], opacity:0.7, name:'").append(varName).append("'};\n");
+        //html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], opacity:0.7, name:'").append(varName).append("'};\n");
+
+        html.append("var ").append(varName).append(" = {type:'mesh3d', x:[], y:[], z:[], i:[], j:[], k:[], facecolor:[], opacity:0.7, name:'")
+                           .append(varName).append("', showlegend:true};\n");
         html.append("var x = ").append(varName).append(".x, y = ").append(varName).append(".y, z = ").append(varName).append(".z;\n");
         html.append("var i = ").append(varName).append(".i, j = ").append(varName).append(".j, k = ").append(varName).append(".k;\n");
         html.append("var facecolor = ").append(varName).append(".facecolor;\n");
