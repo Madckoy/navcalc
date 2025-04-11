@@ -20,7 +20,7 @@ public class BotGeoDataLoader {
             blocks.add(block);
         }
 
-        JsonNode botNode = root.get("bot_position");
+        JsonNode botNode = root.get("botLocation");
         botPosition = mapper.treeToValue(botNode, BotCoordinate3D.class);
     }
 }
