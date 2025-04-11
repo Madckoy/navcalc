@@ -1,18 +1,20 @@
 package com.devone.bot;
 
 import java.io.FileInputStream;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Properties;
 
-import com.devone.bot.core.navigation.filters.BotVerticalRangeFilter;
-import com.devone.bot.core.navigation.BotNavigationPlannerWrapper;
-import com.devone.bot.core.navigation.filters.BotNavigablePointFilter;
-import com.devone.bot.core.navigation.filters.BotRemoveAirFilter;
-import com.devone.bot.core.navigation.filters.BotSolidBlockFilter;
-import com.devone.bot.core.navigation.filters.BotWalkableSurfaceFilter;
-import com.devone.bot.core.navigation.resolvers.BotReachabilityResolver;
+import com.devone.bot.core.logic.navigation.BotNavigationPlannerWrapper;
+import com.devone.bot.core.logic.navigation.filters.BotBlockNoAirFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlockNoUnknownFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlocksNavigableFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlocksNoCoverFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlocksNoDangerousFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlocksVerticalSliceFilter;
+import com.devone.bot.core.logic.navigation.filters.BotBlocksWalkableFilter;
+import com.devone.bot.core.logic.navigation.resolvers.BotReachabilityResolver;
 import com.devone.bot.utils.BotBlockData;
 import com.devone.bot.utils.BotGeoDataLoader;;
 
@@ -33,25 +35,53 @@ public class Main {
             List<BotBlockData> allBlocks = BotGeoDataLoader.blocks;
 
             // Фильтруем блоки по высоте, чтобы оставить только те, которые находятся в пределах 2 блоков от бота
-            List<BotBlockData> trimmed       = BotVerticalRangeFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.bot.y, 2);//relative!!!
+            List<BotBlockData> trimmed       = BotBlocksVerticalSliceFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.bot.y, 2);//relative!!!
 
-            List<BotBlockData> solid         = BotSolidBlockFilter.filter(trimmed);
+            List<BotBlockData> safe          = BotBlocksNoDangerousFilter.filter(trimmed);
+                               //safe          = BotBlocksNoCoverFilter.filter(safe);
+                               //safe          = BotBlockNoUnknownFilter.filter(safe);
 
-            List<BotBlockData> walkable      = BotWalkableSurfaceFilter.filter(solid);
+            List<BotBlockData> walkable      = BotBlocksWalkableFilter.filter(safe);
 
-            List<BotBlockData> navigable     = BotNavigablePointFilter.filter(BotRemoveAirFilter.filter(walkable));
+            List<BotBlockData> navigable     = BotBlocksNavigableFilter.filter(walkable);
 
             List<BotBlockData> reachable     = BotReachabilityResolver.resolve(BotGeoDataLoader.bot, navigable);
 
+            if (reachable == null || reachable.isEmpty()) {
+                System.out.println("No reachable blocks found.");
+
+                reachable = new ArrayList<BotBlockData>();
+
+                BotBlockData fakeBlock = new BotBlockData();
+                fakeBlock.x = BotGeoDataLoader.bot.x;
+                fakeBlock.y = BotGeoDataLoader.bot.y + 20;
+                fakeBlock.z = BotGeoDataLoader.bot.z;   
+
+                reachable.add(fakeBlock);    
+
+            }
+
             List<BotBlockData> navTargets    = BotNavigationPlannerWrapper.getNextExplorationTargets(BotGeoDataLoader.bot, reachable);
 
-            HtmlPlotGenerator.generateExplorationPlot(BotRemoveAirFilter.filter(allBlocks), 
-                                                     BotRemoveAirFilter.filter(trimmed), 
-                                                     BotRemoveAirFilter.filter(solid), 
-                                                     BotRemoveAirFilter.filter(walkable), 
-                                                     navigable, 
-                                                     reachable, 
-                                                     navTargets, 
+            if (navTargets == null || navTargets.isEmpty()) {
+                System.out.println("No navigation targets found.");
+                navTargets = new ArrayList<BotBlockData>();
+
+                BotBlockData fakeBlock = new BotBlockData();
+                fakeBlock.x = BotGeoDataLoader.bot.x;
+                fakeBlock.y = BotGeoDataLoader.bot.y + 20;
+                fakeBlock.z = BotGeoDataLoader.bot.z;
+
+                navTargets.add(fakeBlock);
+            }
+
+            HtmlPlotGenerator.generateExplorationPlot(BotBlockNoAirFilter.filter(allBlocks), 
+                                                     BotBlockNoAirFilter.filter(trimmed), 
+                                                     BotBlockNoAirFilter.filter(safe), 
+                                                     BotBlockNoAirFilter.filter(walkable), 
+                                                     BotBlockNoAirFilter.filter(navigable), 
+                                                     BotBlockNoAirFilter.filter(reachable), 
+                                                     BotBlockNoAirFilter.filter(navTargets), 
                                                      BotGeoDataLoader.bot, 
                                                      "nav_vis.html");
 

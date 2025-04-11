@@ -15,31 +15,20 @@ public class BotBlockData extends BotCoordinate3D {
     }   
     
     public boolean isDangerous() {
-        return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());
+        return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());  
     } 
-
-    public boolean isSolid() {
-        // сюда можно добавлять исключения по мере надобности
-        if (type == null) return false;
-        String t = type.toUpperCase();
-        return !(
-            t.contains("AIR") ||
-            t.contains("WATER") ||
-            t.contains("LAVA") ||
-
-            t.equals("FIRE") ||
-            t.equals("CACTUS")
-        );
-    }
 
     public boolean isBot() {
         return bot;
     }
 
-    public boolean isPassableAndSafe() {
-        if (type == null) return false;
-        String t = type.toUpperCase();
-        return BlockMaterialUtils.AIR_TYPES.contains(t) || t.equals("TALL_GRASS") || t.equals("SNOW") || t.equals("FLOWER");
+    public boolean isUnknown() {
+        return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());
+    }
+
+    public boolean isPassable() {
+        return type != null && !type.isBlank()
+               && !BlockMaterialUtils.NON_PASSABLE_BLOCKS.contains(type.toUpperCase());
     }
 
     @Override

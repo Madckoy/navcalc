@@ -84,7 +84,7 @@ public class HtmlPlotGenerator {
         }
     }
 
-    public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotBlockData> trimmed, List<BotBlockData> solid, List<BotBlockData> walkable,
+    public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotBlockData> trimmed, List<BotBlockData> safe, List<BotBlockData> walkable,
                                                List<BotBlockData> navigable, List<BotBlockData> reachable,
                                                List<BotBlockData> navTargets, BotCoordinate3D bot,
                                                String filePath) throws IOException {
@@ -95,11 +95,11 @@ public class HtmlPlotGenerator {
 
         addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", true);
         addMesh3dSection(html, trimmed, "trimmed", "#BBBBBB", true);
-        addMesh3dSection(html, solid, "solid", "#AABBBB", true);
-        addMesh3dSection(html, walkable, "walkable", "green", true);
-        addMesh3dSection(html, navigable, "navigable", "blue", false);
+        addMesh3dSection(html, safe, "safe", "green", false);
+        addMesh3dSection(html, walkable, "walkable", "blue", false);
+        addMesh3dSection(html, navigable, "navigable", "purple", false);
         addMesh3dSection(html, reachable, "reachable", "orange", false);
-        addMesh3dSection(html, navTargets, "navTargets", "purple", false);
+        addMesh3dSection(html, navTargets, "navTargets", "red", false);
     
 
         // Bot as two vertically stacked blocks (bottom + head)
@@ -123,7 +123,7 @@ public class HtmlPlotGenerator {
         }
 
         // Final plot
-        html.append("Plotly.newPlot('plot', [allBlocks, trimmed, solid, walkable, navigable, reachable, navTargets, bot], {");
+        html.append("Plotly.newPlot('plot', [allBlocks, trimmed, safe, walkable, navigable, reachable, navTargets, bot], {");
         html.append("margin:{l:0,r:0,b:0,t:30},");
         html.append("scene:{xaxis:{title:'X'}, yaxis:{title:'Y'}, zaxis:{title:'Z'}},");
         html.append("title:'3D Navigation Map — Blocks as Cubes'});\n");
