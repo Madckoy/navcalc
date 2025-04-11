@@ -53,9 +53,9 @@ public class Main {
                                                      reachable, 
                                                      navTargets, 
                                                      BotGeoDataLoader.bot, 
-                                                     "nav_report.html");
+                                                     "nav_vis.html");
 
-            System.out.println("Saved visualization to nav_report.html");
+            System.out.println("Saved visualization to nav_vis.html");
 
         } catch (Exception e) {
             e.printStackTrace();
