@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BotGeoDataLoader {
     public static List<BotBlockData> blocks = new ArrayList<>();
-    public static BotCoordinate3D botPosition;
+    public static BotCoordinate3D bot;
 
     public static void loadFromFile(String filePath) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -20,7 +20,7 @@ public class BotGeoDataLoader {
             blocks.add(block);
         }
 
-        JsonNode botNode = root.get("botLocation");
-        botPosition = mapper.treeToValue(botNode, BotCoordinate3D.class);
+        JsonNode botNode = root.get("bot");
+        bot = mapper.treeToValue(botNode, BotCoordinate3D.class);
     }
 }
