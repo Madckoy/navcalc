@@ -45,6 +45,14 @@ public class Main {
 
             List<BotBlockData> navigable     = BotBlocksNavigableFilter.filter(walkable);
 
+            BotBlockData fakeBlockDirt = new BotBlockData();
+            fakeBlockDirt.x = BotGeoDataLoader.bot.x;
+            fakeBlockDirt.y = BotGeoDataLoader.bot.y-1;
+            fakeBlockDirt.z = BotGeoDataLoader.bot.z; 
+            fakeBlockDirt.type = "DIRT";
+                
+            navigable.add(fakeBlockDirt);
+
             List<BotBlockData> reachable     = BotReachabilityResolver.resolve(BotGeoDataLoader.bot, navigable);
 
             if (reachable == null || reachable.isEmpty()) {
@@ -54,7 +62,7 @@ public class Main {
 
                 BotBlockData fakeBlock = new BotBlockData();
                 fakeBlock.x = BotGeoDataLoader.bot.x;
-                fakeBlock.y = BotGeoDataLoader.bot.y + 20;
+                fakeBlock.y = BotGeoDataLoader.bot.y+20;
                 fakeBlock.z = BotGeoDataLoader.bot.z;   
 
                 reachable.add(fakeBlock);    
