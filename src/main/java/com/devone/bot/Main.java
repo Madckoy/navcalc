@@ -45,13 +45,13 @@ public class Main {
 
             List<BotBlockData> navigable     = BotBlocksNavigableFilter.filter(walkable);
 
-            BotBlockData fakeBlockDirt = new BotBlockData();
-            fakeBlockDirt.x = BotGeoDataLoader.bot.x;
-            fakeBlockDirt.y = BotGeoDataLoader.bot.y-1;
-            fakeBlockDirt.z = BotGeoDataLoader.bot.z; 
-            fakeBlockDirt.type = "DIRT";
+            BotBlockData fakeBlockDirt1 = new BotBlockData();
+            fakeBlockDirt1.x = BotGeoDataLoader.bot.x;
+            fakeBlockDirt1.y = BotGeoDataLoader.bot.y-1;
+            fakeBlockDirt1.z = BotGeoDataLoader.bot.z; 
+            fakeBlockDirt1.type = "DIRT";
                 
-            navigable.add(fakeBlockDirt);
+            navigable.add(fakeBlockDirt1);
 
             List<BotBlockData> reachable     = BotReachabilityResolver.resolve(BotGeoDataLoader.bot, navigable);
 

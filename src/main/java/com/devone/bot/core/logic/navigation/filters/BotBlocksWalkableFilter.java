@@ -37,7 +37,7 @@ public class BotBlocksWalkableFilter {
             }
 
             // Если над блоком два уровня воздуха или длинные проходимые растения — он пригоден для ходьбы
-            if(blockAbove2.isAir() || blockAbove2.isPassable()) {
+            if(blockAbove2.isAir() || blockAbove2.isPassable() ) {
                 if(blockAbove1.isAir() || blockAbove1.isBot() || blockAbove1.isCover() || blockAbove1.isPassable()) {
                     result.add(block); // Добавляем блок в результат, если он прошел все проверки
                 }
