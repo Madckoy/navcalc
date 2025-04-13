@@ -1,5 +1,7 @@
 package com.devone.bot.utils;
 
+import com.devone.bot.utils.blocks.BotBlockData;
+import com.devone.bot.utils.blocks.BotCoordinate3D;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -15,8 +15,8 @@ import com.devone.bot.core.logic.navigation.filters.BotBlocksNoDangerousFilter;
 import com.devone.bot.core.logic.navigation.filters.BotBlocksVerticalSliceFilter;
 import com.devone.bot.core.logic.navigation.filters.BotBlocksWalkableFilter;
 import com.devone.bot.core.logic.navigation.resolvers.BotReachabilityResolver;
-import com.devone.bot.utils.BotBlockData;
-import com.devone.bot.utils.BotGeoDataLoader;;
+import com.devone.bot.utils.BotGeoDataLoader;
+import com.devone.bot.utils.blocks.BotBlockData;;
 
 public class Main {
     public static void main(String[] args) {

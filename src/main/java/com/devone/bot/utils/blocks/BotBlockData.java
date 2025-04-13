@@ -1,11 +1,13 @@
-package com.devone.bot.utils;
+package com.devone.bot.utils.blocks;
+
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BotBlockData extends BotCoordinate3D {
 
-
     public String type;
+    public UUID   uuid;
 
     @JsonIgnore
     public boolean bot;  // из JSON  
@@ -34,11 +36,15 @@ public class BotBlockData extends BotCoordinate3D {
     public boolean isUnknown() {
         return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());
     }
-    
+
     @JsonIgnore
-    public boolean isPassable() {
-        return type != null && !type.isBlank()
-               && !BlockMaterialUtils.NON_PASSABLE_BLOCKS.contains(type.toUpperCase());
+    public boolean isHostileMob() {
+        return true;
+    }
+
+    @JsonIgnore
+    public boolean isPassiveMob() {
+        return false;
     }
     
     @JsonIgnore
@@ -46,7 +52,7 @@ public class BotBlockData extends BotCoordinate3D {
         return new BotCoordinate3D(x,y,z);
     }
     
-    @Override
+    @JsonIgnore
     public String toString() {
         return String.format("Block[x=%d, y=%d, z=%d, type=%s, bot=%b]", x, y, z, type, bot);
     }

@@ -1,4 +1,4 @@
-package com.devone.bot.utils;
+package com.devone.bot.utils.blocks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ public class BlockMaterialUtils {
     public static final Set<String> AIR_TYPES = Set.of("AIR", "CAVE_AIR", "VOID_AIR");
 
     // Блоки, сквозь которые нельзя пройти (используются для построения графа навигации)
-    public static final Set<String> NON_PASSABLE_BLOCKS = Set.of(
+    public static final Set<String> NON_PASSABLE_BLOCKS_DELETE = Set.of(
         "STONE", "GRANITE", "DIORITE", "ANDESITE", "DEEPSLATE", "COBBLESTONE",
         "BEDROCK", "OBSIDIAN", "OAK_PLANKS", "SPRUCE_PLANKS", "BIRCH_PLANKS",
         "JUNGLE_PLANKS", "ACACIA_PLANKS", "DARK_OAK_PLANKS", "CRIMSON_PLANKS", "WARPED_PLANKS",
@@ -20,7 +20,7 @@ public class BlockMaterialUtils {
         "NETHERITE_BLOCK", "QUARTZ_BLOCK", "PURPUR_BLOCK", "END_STONE", "END_BRICKS",
         "NETHER_BRICKS", "RED_NETHER_BRICKS", "BASALT", "POLISHED_BASALT", "BLACKSTONE",
         "POLISHED_BLACKSTONE", "CRYING_OBSIDIAN", "ANCIENT_DEBRIS", "DEEPSLATE_BRICKS",
-        "DEEPSLATE_TILES", "REINFORCED_DEEPSLATE"
+        "DEEPSLATE_TILES", "REINFORCED_DEEPSLATE", "GRA"
     );
 
     // Блоки, которые представляют угрозу (например, наносят урон или мешают движению)
@@ -31,6 +31,7 @@ public class BlockMaterialUtils {
     );
 
     public static final Set<String> COVER_TYPES = Set.of(
+        "AIR",
         "ICE",
         "SNOW",
         "CARPET",

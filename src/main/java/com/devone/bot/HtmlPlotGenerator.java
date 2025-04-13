@@ -4,9 +4,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import com.devone.bot.utils.BlockMaterialUtils;
-import com.devone.bot.utils.BotBlockData;
-import com.devone.bot.utils.BotCoordinate3D;
+import com.devone.bot.utils.blocks.BlockMaterialUtils;
+import com.devone.bot.utils.blocks.BotBlockData;
+import com.devone.bot.utils.blocks.BotCoordinate3D;
 
 public class HtmlPlotGenerator {
 

@@ -1,4 +1,4 @@
-package com.devone.bot.utils;
+package com.devone.bot.utils.blocks;
 
 import java.util.Objects;
 
@@ -29,6 +29,14 @@ public class BotCoordinate3D {
         if (!(o instanceof BotCoordinate3D)) return false;
         BotCoordinate3D that = (BotCoordinate3D) o;
         return x == that.x && y == that.y && z == that.z;
+    }
+
+    public double distanceTo(BotCoordinate3D other) {
+        if (other == null) return Double.MAX_VALUE;
+        int dx = this.x - other.x;
+        int dy = this.y - other.y;
+        int dz = this.z - other.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     @Override

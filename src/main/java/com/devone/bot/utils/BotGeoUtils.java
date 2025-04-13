@@ -3,6 +3,8 @@ package com.devone.bot.utils;
 
 import java.util.List;
 
+import com.devone.bot.utils.blocks.BotBlockData;
+
 public class BotGeoUtils {
     public static int estimateHorizontalRadius(List<BotBlockData> blocks) {
         
