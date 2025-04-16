@@ -58,6 +58,48 @@ public class HtmlPlotGenerator {
         return vertexOffset + 8;
     }
 
+
+    private static void addMesh3dSectionWFaces(StringBuilder html, List<BotBlockData> blocks, String varName, String fallbackColor, boolean useMaterialColors) {
+
+        if (blocks == null || blocks.isEmpty()) {
+            System.err.println("Warning: No blocks to plot for " + varName);
+            return;
+        }
+    
+        html.append("var ").append(varName).append(" = {\n")
+            .append("  type: 'mesh3d',\n")
+            .append("  x: [], y: [], z: [],\n")
+            .append("  i: [], j: [], k: [],\n")
+            .append("  facecolor: [], text: [],\n")
+            .append("  opacity: 0.5,\n")
+            .append("  name: '").append(varName).append("',\n")
+            .append("  showlegend: true,\n")
+            .append("  hoverinfo: 'text',\n")
+            .append("  flatshading: true,\n")
+            .append("  lighting: {\n")
+            .append("    ambient: 0.6,\n")
+            .append("    diffuse: 0.9,\n")
+            .append("    specular: 0.3,\n")
+            .append("    roughness: 0.5,\n")
+            .append("    fresnel: 0.2\n")
+            .append("  }\n")
+            .append("};\n");
+    
+        html.append("var x = ").append(varName).append(".x, y = ").append(varName).append(".y, z = ").append(varName).append(".z;\n");
+        html.append("var i = ").append(varName).append(".i, j = ").append(varName).append(".j, k = ").append(varName).append(".k;\n");
+        html.append("var facecolor = ").append(varName).append(".facecolor;\n");
+        html.append("var text = ").append(varName).append(".text;\n");
+    
+        int vertexOffset = 0;
+        for (BotBlockData block : blocks) {
+            String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.getType()) : fallbackColor;
+            String tooltip = String.format("Type: %s<br>X: %d<br>Y: %d<br>Z: %d",
+                    block.getType() != null ? block.getType() : "UNKNOWN", block.getX(), block.getY(), block.getZ());
+    
+            vertexOffset = addCube(html, block, vertexOffset, color, tooltip);
+        }
+    }
+
     private static void addMesh3dSection(StringBuilder html, List<BotBlockData> blocks, String varName, String fallbackColor, boolean useMaterialColors) {
 
         if (blocks == null || blocks.isEmpty()) {
@@ -93,13 +135,13 @@ public class HtmlPlotGenerator {
         html.append("<html><head><script src='https://cdn.plot.ly/plotly-latest.min.js'></script></head><body>");
         html.append("<div id='plot' style='width:100%;height:100vh;'></div><script>\n");
 
-        addMesh3dSection(html, allBlocks, "allBlocks", "#AAAAAA", true);
-        addMesh3dSection(html, trimmed, "trimmed", "#BBBBBB", true);
-        addMesh3dSection(html, safe, "safe", "green", false);
-        addMesh3dSection(html, walkable, "walkable", "blue", false);
-        addMesh3dSection(html, navigable, "navigable", "purple", false);
-        addMesh3dSection(html, reachable, "reachable", "orange", false);
-        addMesh3dSection(html, navTargets, "navTargets", "red", false);
+        addMesh3dSectionWFaces(html, allBlocks, "allBlocks", "#AAAAAA", true);
+        addMesh3dSectionWFaces(html, trimmed, "trimmed", "#BBBBBB", true);
+        addMesh3dSectionWFaces(html, safe, "safe", "green", false);
+        addMesh3dSectionWFaces(html, walkable, "walkable", "blue", false);
+        addMesh3dSectionWFaces(html, navigable, "navigable", "purple", false);
+        addMesh3dSectionWFaces(html, reachable, "reachable", "orange", false);
+        addMesh3dSectionWFaces(html, navTargets, "navTargets", "red", false);
     
 
         // Bot as two vertically stacked blocks (bottom + head)
