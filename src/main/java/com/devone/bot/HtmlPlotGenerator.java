@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.devone.bot.utils.blocks.BlockMaterialUtils;
 import com.devone.bot.utils.blocks.BotBlockData;
-import com.devone.bot.utils.blocks.BotCoordinate3D;
+import com.devone.bot.utils.blocks.BotLocation;
 
 public class HtmlPlotGenerator {
 
@@ -14,11 +14,11 @@ public class HtmlPlotGenerator {
 
     private static int addCube(StringBuilder js, BotBlockData block, int vertexOffset, String color, String tooltip) {
 
-        double x = block.x;
-        double y = block.y;
-        double z = block.z;
+        double x = block.getX();
+        double y = block.getY();
+        double z = block.getZ();
     
-        double heightFactor = block.type != null && block.isCover() ? 0.25 : 1.0;
+        double heightFactor = block.getType() != null && block.isCover() ? 0.25 : 1.0;
     
         double x0 = x - HALF, x1 = x + HALF;
         double y0 = y - HALF, y1 = y0 + heightFactor;
@@ -76,9 +76,9 @@ public class HtmlPlotGenerator {
     
         int vertexOffset = 0;
         for (BotBlockData block : blocks) {
-            String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.type) : fallbackColor;
+            String color = useMaterialColors ? BlockMaterialUtils.getColorCodeForType(block.getType()) : fallbackColor;
             String tooltip = String.format("Type: %s<br>X: %d<br>Y: %d<br>Z: %d",
-                    block.type != null ? block.type : "UNKNOWN", block.x, block.y, block.z);
+                    block.getType() != null ? block.getType() : "UNKNOWN", block.getX(), block.getY(), block.getZ());
 
                 vertexOffset = addCube(html, block, vertexOffset, color, tooltip);
         }
@@ -86,7 +86,7 @@ public class HtmlPlotGenerator {
 
     public static void generateExplorationPlot(List<BotBlockData> allBlocks, List<BotBlockData> trimmed, List<BotBlockData> safe, List<BotBlockData> walkable,
                                                List<BotBlockData> navigable, List<BotBlockData> reachable,
-                                               List<BotBlockData> navTargets, BotCoordinate3D bot,
+                                               List<BotBlockData> navTargets, BotLocation bot,
                                                String filePath) throws IOException {
 
         StringBuilder html = new StringBuilder();
@@ -112,12 +112,12 @@ public class HtmlPlotGenerator {
         int vertexOffset = 0;
         for (int dy = 0; dy <= 1; dy++) {
             BotBlockData botBlock = new BotBlockData();
-            botBlock.x = bot.x;
-            botBlock.y = bot.y + dy;
-            botBlock.z = bot.z;
+            botBlock.setX(bot.getX());
+            botBlock.setY(bot.getY() + dy);
+            botBlock.setZ(bot.getZ());
 
             String label = (dy == 0) ? "Bot Base" : "Bot Head";
-            String tooltip = String.format("%s<br>X: %d<br>Y: %d<br>Z: %d", label, botBlock.x, botBlock.y, botBlock.z);
+            String tooltip = String.format("%s<br>X: %d<br>Y: %d<br>Z: %d", label, botBlock.getX(), botBlock.getY(), botBlock.getZ());
 
             vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000", tooltip);
         }

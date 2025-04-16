@@ -36,7 +36,7 @@ This tool processes 3D scan data around a Minecraft bot to identify walkable and
 ## 🧰 Utilities
 
 - `BotBlockData` – holds position + material
-- `BotCoordinate3D` – base class for 3D coordinates
+- `BotLocation` – base class for 3D coordinates
 - `BlockMaterialUtils` – provides block safety and type checks
 - `BotGeoDataLoader` – loads data from `.json` files
 - `BotGeoUtils` – helper functions for coordinate math

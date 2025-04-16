@@ -1,7 +1,7 @@
 package com.devone.bot.utils;
 
 import com.devone.bot.utils.blocks.BotBlockData;
-import com.devone.bot.utils.blocks.BotCoordinate3D;
+import com.devone.bot.utils.blocks.BotLocation;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BotGeoDataLoader {
     public static List<BotBlockData> blocks = new ArrayList<>();
-    public static BotCoordinate3D bot;
+    public static BotLocation bot;
 
     public static void loadFromFile(String filePath) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -23,6 +23,6 @@ public class BotGeoDataLoader {
         }
 
         JsonNode botNode = root.get("bot");
-        bot = mapper.treeToValue(botNode, BotCoordinate3D.class);
+        bot = mapper.treeToValue(botNode, BotLocation.class);
     }
 }

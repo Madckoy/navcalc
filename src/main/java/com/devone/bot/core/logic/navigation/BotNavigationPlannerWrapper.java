@@ -2,7 +2,7 @@ package com.devone.bot.core.logic.navigation;
 
 import com.devone.bot.core.logic.navigation.BotExplorationTargetPlanner.Strategy;
 import com.devone.bot.utils.blocks.BotBlockData;
-import com.devone.bot.utils.blocks.BotCoordinate3D;
+import com.devone.bot.utils.blocks.BotLocation;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class BotNavigationPlannerWrapper {
      * Если sectorCount == null, будет подобрано автоматически по площади.
      * scanRadius теперь тоже рассчитывается адаптивно.
      */
-    public static List<BotBlockData> getNextExplorationTargets(BotCoordinate3D botPosition,
+    public static List<BotBlockData> getNextExplorationTargets(BotLocation botPosition,
                                                                 List<BotBlockData> reachable) {
         if (reachable == null || reachable.isEmpty()) return null;
 
@@ -41,16 +41,16 @@ public class BotNavigationPlannerWrapper {
      * Расчёт безопасного радиуса сканирования:
      * среднее между средней и максимальной дистанцией до reachable-точек.
      */
-    private static int estimateSafeScanRadius(BotCoordinate3D bot, List<BotBlockData> reachable) {
+    private static int estimateSafeScanRadius(BotLocation bot, List<BotBlockData> reachable) {
         if (reachable.isEmpty()) return 2;
 
         double sum = 0;
         double max = 0;
 
         for (BotBlockData b : reachable) {
-            double dx = b.x - bot.x;
-            double dy = b.y - bot.y;
-            double dz = b.z - bot.z;
+            double dx = b.getX() - bot.getX();
+            double dy = b.getY() - bot.getY();
+            double dz = b.getZ() - bot.getZ();
             double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             sum += dist;
@@ -70,10 +70,10 @@ public class BotNavigationPlannerWrapper {
         int minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
 
         for (BotBlockData block : blocks) {
-            minX = Math.min(minX, block.x);
-            maxX = Math.max(maxX, block.x);
-            minZ = Math.min(minZ, block.z);
-            maxZ = Math.max(maxZ, block.z);
+            minX = Math.min(minX, block.getX());
+            maxX = Math.max(maxX, block.getX());
+            minZ = Math.min(minZ, block.getZ());
+            maxZ = Math.max(maxZ, block.getZ());
         }
 
         int area = Math.max(1, (maxX - minX + 1) * (maxZ - minZ + 1));

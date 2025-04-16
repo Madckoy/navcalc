@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import com.devone.bot.core.logic.navigation.BotNavigationPlannerWrapper;
 import com.devone.bot.core.logic.navigation.filters.BotBlockNoAirFilter;
-import com.devone.bot.core.logic.navigation.filters.BotBlockNoUnknownFilter;
 import com.devone.bot.core.logic.navigation.filters.BotBlocksNavigableFilter;
 import com.devone.bot.core.logic.navigation.filters.BotBlocksNoCoverFilter;
 import com.devone.bot.core.logic.navigation.filters.BotBlocksNoDangerousFilter;
@@ -35,21 +34,20 @@ public class Main {
             List<BotBlockData> allBlocks = BotGeoDataLoader.blocks;
 
             // Фильтруем блоки по высоте, чтобы оставить только те, которые находятся в пределах 2 блоков от бота
-            List<BotBlockData> trimmed       = BotBlocksVerticalSliceFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.bot.y, 2);//relative!!!
+            List<BotBlockData> trimmed       = BotBlocksVerticalSliceFilter.filter(BotGeoDataLoader.blocks, BotGeoDataLoader.bot.getY(), 2);//relative!!!
 
             List<BotBlockData> safe          = BotBlocksNoDangerousFilter.filter(trimmed);
                                //safe          = BotBlocksNoCoverFilter.filter(safe);
-                               //safe          = BotBlockNoUnknownFilter.filter(safe);
 
             List<BotBlockData> walkable      = BotBlocksWalkableFilter.filter(safe);
 
             List<BotBlockData> navigable     = BotBlocksNavigableFilter.filter(walkable);
 
             BotBlockData fakeBlockDirt1 = new BotBlockData();
-            fakeBlockDirt1.x = BotGeoDataLoader.bot.x;
-            fakeBlockDirt1.y = BotGeoDataLoader.bot.y-1;
-            fakeBlockDirt1.z = BotGeoDataLoader.bot.z; 
-            fakeBlockDirt1.type = "DIRT";
+            fakeBlockDirt1.setX(BotGeoDataLoader.bot.getX());
+            fakeBlockDirt1.setY(BotGeoDataLoader.bot.getY()-1);
+            fakeBlockDirt1.setZ(BotGeoDataLoader.bot.getZ()); 
+            fakeBlockDirt1.setType("DIRT");
                 
             navigable.add(fakeBlockDirt1);
 
@@ -61,9 +59,9 @@ public class Main {
                 reachable = new ArrayList<BotBlockData>();
 
                 BotBlockData fakeBlock = new BotBlockData();
-                fakeBlock.x = BotGeoDataLoader.bot.x;
-                fakeBlock.y = BotGeoDataLoader.bot.y+20;
-                fakeBlock.z = BotGeoDataLoader.bot.z;   
+                fakeBlock.setX(BotGeoDataLoader.bot.getX());
+                fakeBlock.setY(BotGeoDataLoader.bot.getY()+20);
+                fakeBlock.setZ(BotGeoDataLoader.bot.getZ());   
 
                 reachable.add(fakeBlock);    
 
@@ -76,9 +74,9 @@ public class Main {
                 navTargets = new ArrayList<BotBlockData>();
 
                 BotBlockData fakeBlock = new BotBlockData();
-                fakeBlock.x = BotGeoDataLoader.bot.x;
-                fakeBlock.y = BotGeoDataLoader.bot.y + 20;
-                fakeBlock.z = BotGeoDataLoader.bot.z;
+                fakeBlock.setX(BotGeoDataLoader.bot.getX());
+                fakeBlock.setY(BotGeoDataLoader.bot.getY()+20);
+                fakeBlock.setZ(BotGeoDataLoader.bot.getZ());  
 
                 navTargets.add(fakeBlock);
             }

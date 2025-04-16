@@ -4,14 +4,40 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BotBlockData extends BotCoordinate3D {
+public class BotBlockData extends BotLocation {
 
-    public String type;
-    public UUID   uuid;
+    private String type;
+    private UUID   uuid;
+
+    public void setType( String type){
+        this.type = type;
+    }
+
+    public String getType(){
+        return this.type;
+    }
+
+    public void setUUID( UUID id){
+        this.uuid = id;
+    }
+
+    public UUID getUUID(){
+        return this.uuid;
+    }
 
     @JsonIgnore
-    public boolean bot;  // из JSON  
+    private boolean bot;  // из JSON  
     
+    @JsonIgnore
+    public boolean isBot() {
+        return bot;
+    }
+
+    @JsonIgnore
+    public void setBot(boolean bot) {
+        this.bot = bot;
+    }
+
     @JsonIgnore
     public boolean isAir() {
         return type != null && BlockMaterialUtils.AIR_TYPES.contains(type.toUpperCase());
@@ -28,32 +54,7 @@ public class BotBlockData extends BotCoordinate3D {
     } 
     
     @JsonIgnore
-    public boolean isBot() {
-        return bot;
-    }
-
-    @JsonIgnore
-    public boolean isUnknown() {
-        return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());
-    }
-
-    @JsonIgnore
-    public boolean isHostileMob() {
-        return true;
-    }
-
-    @JsonIgnore
-    public boolean isPassiveMob() {
-        return false;
-    }
-    
-    @JsonIgnore
-    public BotCoordinate3D getCoordinate3D() {
-        return new BotCoordinate3D(x,y,z);
-    }
-    
-    @JsonIgnore
     public String toString() {
-        return String.format("Block[x=%d, y=%d, z=%d, type=%s, bot=%b]", x, y, z, type, bot);
+        return String.format("Block[x=%d, y=%d, z=%d, type=%s, bot=%b]", this.getX(), this.getY(), this.getZ(), type, bot);
     }
 }
