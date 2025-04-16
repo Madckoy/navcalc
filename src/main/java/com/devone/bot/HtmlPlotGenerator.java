@@ -142,6 +142,11 @@ public class HtmlPlotGenerator {
         addMesh3dSectionWFaces(html, navigable, "navigable", "purple", false);
         addMesh3dSectionWFaces(html, reachable, "reachable", "orange", false);
         addMesh3dSectionWFaces(html, navTargets, "navTargets", "red", false);
+        
+        addWireframeSection(html, safe, "safeOutline", "black");
+        addWireframeSection(html, walkable, "walkableOutline", "lime");
+        addWireframeSection(html, navigable, "navigableOutline", "violet");
+        addWireframeSection(html, reachable, "reachableOutline", "orange");
     
 
         // Bot as two vertically stacked blocks (bottom + head)
@@ -165,8 +170,10 @@ public class HtmlPlotGenerator {
         }
 
         // Final plot
-        html.append("Plotly.newPlot('plot', [allBlocks, trimmed, safe, walkable, navigable, reachable, navTargets, bot], {");
+       // html.append("Plotly.newPlot('plot', [allBlocks, trimmed, safe, walkable, navigable, reachable, navTargets, bot], {");
+        html.append("Plotly.newPlot('plot', [allBlocks, trimmed, safe, walkable, navigable, reachable, safeOutline, walkableOutline, navigableOutline, reachableOutline, navTargets, bot], {");
         html.append("margin:{l:0,r:0,b:0,t:30},");
+
         html.append("scene:{xaxis:{title:'X'}, yaxis:{title:'Y'}, zaxis:{title:'Z'}},");
         html.append("title:'3D Navigation Map — Blocks as Cubes'});\n");
 
@@ -174,6 +181,49 @@ public class HtmlPlotGenerator {
 
         try (FileWriter writer = new FileWriter(filePath)) {
             writer.write(html.toString());
+        }
+        
+    }
+
+    private static void addWireframeSection(StringBuilder html, List<BotBlockData> blocks, String varName, String lineColor) {
+        if (blocks == null || blocks.isEmpty()) return;
+    
+        html.append("var ").append(varName).append(" = { type: 'scatter3d', mode: 'lines', x: [], y: [], z: [], ")
+            .append("line: { color: '").append(lineColor).append("', width: 1 }, hoverinfo: 'skip', showlegend: false };\n");
+        html.append("var x = ").append(varName).append(".x, y = ").append(varName).append(".y, z = ").append(varName).append(".z;\n");
+    
+        for (BotBlockData block : blocks) {
+            double x = block.getX();
+            double y = block.getY();
+            double z = block.getZ();
+    
+            double x0 = x - HALF, x1 = x + HALF;
+            double y0 = y - HALF, y1 = y + HALF;
+            double z0 = z - HALF, z1 = z + HALF;
+    
+            // 12 рёбер куба (по парам точек)
+            double[][] edges = {
+                {x0, y0, z0, x1, y0, z0},
+                {x1, y0, z0, x1, y1, z0},
+                {x1, y1, z0, x0, y1, z0},
+                {x0, y1, z0, x0, y0, z0},
+    
+                {x0, y0, z1, x1, y0, z1},
+                {x1, y0, z1, x1, y1, z1},
+                {x1, y1, z1, x0, y1, z1},
+                {x0, y1, z1, x0, y0, z1},
+    
+                {x0, y0, z0, x0, y0, z1},
+                {x1, y0, z0, x1, y0, z1},
+                {x1, y1, z0, x1, y1, z1},
+                {x0, y1, z0, x0, y1, z1},
+            };
+    
+            for (double[] edge : edges) {
+                html.append("x.push(").append(edge[0]).append("); y.push(").append(edge[1]).append("); z.push(").append(edge[2]).append(");\n");
+                html.append("x.push(").append(edge[3]).append("); y.push(").append(edge[4]).append("); z.push(").append(edge[5]).append(");\n");
+                html.append("x.push(null); y.push(null); z.push(null);\n"); // разделитель
+            }
         }
     }
 }
