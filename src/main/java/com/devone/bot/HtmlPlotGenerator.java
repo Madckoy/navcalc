@@ -119,7 +119,7 @@ public class HtmlPlotGenerator {
             String label = (dy == 0) ? "Bot Base" : "Bot Head";
             String tooltip = String.format("%s<br>X: %d<br>Y: %d<br>Z: %d", label, botBlock.getX(), botBlock.getY(), botBlock.getZ());
 
-            vertexOffset = addCube(html, botBlock, vertexOffset, "#FF0000", tooltip);
+            vertexOffset = addCube(html, botBlock, vertexOffset, "#000000", tooltip);
         }
 
         // Final plot
