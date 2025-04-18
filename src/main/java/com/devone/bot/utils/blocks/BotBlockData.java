@@ -53,8 +53,13 @@ public class BotBlockData extends BotLocation {
         return type != null && BlockMaterialUtils.UNSAFE_TYPES.contains(type.toUpperCase());  
     } 
     
+
     @JsonIgnore
     public String toString() {
         return String.format("Block[x=%d, y=%d, z=%d, type=%s, bot=%b]", this.getX(), this.getY(), this.getZ(), type, bot);
+    }
+    @JsonIgnore
+    public BotLocation getLocation(){
+        return new BotLocation(getX(), getY(), getZ());
     }
 }
